@@ -49,8 +49,7 @@ const UpdateProductPage = () => {
           });
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
-      } finally {
+        } finally {
         setLoading(false);
       }
     };
@@ -58,7 +57,6 @@ const UpdateProductPage = () => {
   }, [apiUrl, productId, form]);
 
   const onFinish = async (values) => {
-    console.log(values);
     const imgLinks = values.img.split("\n").map((link) => link.trim());
     const colors = values.colors.split("\n").map((link) => link.trim());
     const sizes = values.sizes.split("\n").map((link) => link.trim());
@@ -88,8 +86,7 @@ const UpdateProductPage = () => {
         message.error("Ürün güncellenirken bir hata oluştu.");
       }
     } catch (error) {
-      console.log("Ürün güncelleme hatası:", error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   };

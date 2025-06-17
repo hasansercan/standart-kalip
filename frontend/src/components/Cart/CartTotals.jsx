@@ -64,8 +64,7 @@ const CartTotals = () => {
         throw new Error(result.error.message);
       }
     } catch (error) {
-      console.log(error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   };

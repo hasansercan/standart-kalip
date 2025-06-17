@@ -35,8 +35,7 @@ const UpdateUserPage = () => {
                 message.error("Kullanıcı bilgileri alınamadı.");
             }
         } catch (error) {
-            console.log("Kullanıcı bilgileri alınamadı:", error);
-        } finally {
+            } finally {
             setDataLoading(false);
         }
     }, [apiUrl, userId, form]);
@@ -70,7 +69,6 @@ const UpdateUserPage = () => {
                 message.error(errorData.error || "Kullanıcı güncellenirken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Kullanıcı güncelleme hatası:", error);
             message.error("Kullanıcı güncellenirken bir hata oluştu.");
         } finally {
             setLoading(false);

@@ -49,11 +49,9 @@ const Categories = () => {
             setCategories(fallbackCategories);
           }
         } else {
-          console.log("Kategori verisi alınamadı, fallback veriler kullanılıyor");
           setCategories(fallbackCategories);
         }
       } catch (error) {
-        console.log("Kategori verisi alma hatası:", error);
         setCategories(fallbackCategories);
       } finally {
         setLoading(false);

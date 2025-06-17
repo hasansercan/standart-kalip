@@ -51,7 +51,6 @@ const CreateBlogPage = () => {
                 message.error('Resim yükleme başarısız.');
             }
         } catch (error) {
-            console.error('Resim yükleme hatası:', error);
             message.error('Resim yükleme sırasında hata oluştu.');
         } finally {
             setImageUploading(false);
@@ -97,7 +96,6 @@ const CreateBlogPage = () => {
                 message.error("Blog oluşturma başarısız.");
             }
         } catch (error) {
-            console.log("Blog oluşturma hatası:", error);
             message.error("Blog oluşturma sırasında hata oluştu.");
         } finally {
             setLoading(false);

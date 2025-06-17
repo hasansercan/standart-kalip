@@ -39,7 +39,6 @@ const CreateCategoryPage = () => {
         message.error("Kategori oluşturulurken bir hata oluştu.");
       }
     } catch (error) {
-      console.log("Kategori oluşturma hatası:", error);
       message.error("Kategori oluşturulurken bir hata oluştu.");
     } finally {
       setLoading(false);

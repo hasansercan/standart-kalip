@@ -40,7 +40,6 @@ const HomePage = () => {
           }));
         }
       } catch (error) {
-        console.error("Settings fetch error:", error);
         // Hata durumunda varsayılan ayarları kullan
       } finally {
         setLoading(false);

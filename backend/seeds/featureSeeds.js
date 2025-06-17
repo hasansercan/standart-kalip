@@ -57,20 +57,12 @@ const featureData = [
 const seedFeatures = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut feature verilerini sil
         await Feature.deleteMany({});
-        console.log("Mevcut feature verileri silindi");
-
         // Yeni feature verilerini ekle
         await Feature.insertMany(featureData);
-        console.log("Feature verileri başarıyla eklendi");
-
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

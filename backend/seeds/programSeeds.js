@@ -55,20 +55,12 @@ const programs = [
 const seedPrograms = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut program verilerini sil
         await Program.deleteMany({});
-        console.log("Mevcut program verileri silindi");
-
         // Yeni program verilerini ekle
         await Program.insertMany(programs);
-        console.log("Program verileri başarıyla eklendi");
-
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Program seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

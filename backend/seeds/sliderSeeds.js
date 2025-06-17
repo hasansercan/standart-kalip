@@ -49,20 +49,12 @@ const sliderData = [
 const seedSliders = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut slider verilerini sil
         await Slider.deleteMany({});
-        console.log("Mevcut slider verileri silindi");
-
         // Yeni slider verilerini ekle
         await Slider.insertMany(sliderData);
-        console.log("Slider verileri başarıyla eklendi");
-
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

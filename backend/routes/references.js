@@ -21,7 +21,6 @@ router.post("/", async (req, res) => {
 
         res.status(201).json(newReference);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -33,7 +32,6 @@ router.get("/", async (req, res) => {
 
         res.status(200).json(references);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -45,7 +43,6 @@ router.get("/active", async (req, res) => {
 
         res.status(200).json(activeReferences);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -60,11 +57,9 @@ router.get("/:referenceId", async (req, res) => {
 
             res.status(200).json(reference);
         } catch (error) {
-            console.log(error);
             res.status(404).json({ error: "Reference not found." });
         }
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -89,7 +84,6 @@ router.put("/:referenceId", async (req, res) => {
 
         res.status(200).json(updatedReference);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -107,7 +101,6 @@ router.delete("/:referenceId", async (req, res) => {
 
         res.status(200).json(deletedReference);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -128,7 +121,6 @@ router.post("/upload", categoryUpload.single('image'), (req, res) => {
             filename: req.file.filename
         });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Dosya yükleme hatası" });
     }
 });

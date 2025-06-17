@@ -26,7 +26,6 @@ const BlogDetails = () => {
           message.error("Blog yüklenirken hata oluştu.");
         }
       } catch (error) {
-        console.log("Blog yükleme hatası:", error);
         message.error("Blog yüklenirken hata oluştu.");
       } finally {
         setLoading(false);

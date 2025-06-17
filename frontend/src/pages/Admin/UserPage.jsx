@@ -136,8 +136,7 @@ const UserPage = () => {
         message.error("Veri getirme başarısız.");
       }
     } catch (error) {
-      console.log("Veri hatası:", error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   }, [apiUrl]);
@@ -156,7 +155,6 @@ const UserPage = () => {
         message.error(errorData.error || "Silme işlemi başarısız.");
       }
     } catch (error) {
-      console.log("Silme hatası:", error);
       message.error("Silme işlemi başarısız.");
     }
   };
@@ -184,7 +182,6 @@ const UserPage = () => {
         message.error(errorData.error || "Durum güncelleme başarısız.");
       }
     } catch (error) {
-      console.log("Durum güncelleme hatası:", error);
       message.error("Durum güncelleme başarısız.");
     }
   };

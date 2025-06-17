@@ -25,8 +25,7 @@ const UpdateFeaturePage = () => {
                 message.error("Veri getirme başarısız.");
             }
         } catch (error) {
-            console.log("Veri hatası:", error);
-        } finally {
+            } finally {
             setDataLoading(false);
         }
     }, [apiUrl, featureId, form]);
@@ -49,8 +48,7 @@ const UpdateFeaturePage = () => {
                 message.error("Özellik güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Özellik güncelleme hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };

@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
         const pages = await Page.find({ isActive: true }).sort({ order: 1 });
         res.status(200).json(pages);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -24,7 +23,6 @@ router.get("/:slug", async (req, res) => {
 
         res.status(200).json(page);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -37,7 +35,6 @@ router.get("/admin/all", async (req, res) => {
         const pages = await Page.find().sort({ order: 1 });
         res.status(200).json(pages);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -53,7 +50,6 @@ router.get("/admin/:id", async (req, res) => {
 
         res.status(200).json(page);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -82,7 +78,6 @@ router.post("/", async (req, res) => {
         const savedPage = await newPage.save();
         res.status(201).json(savedPage);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -122,7 +117,6 @@ router.put("/:id", async (req, res) => {
 
         res.status(200).json(updatedPage);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -138,7 +132,6 @@ router.delete("/:id", async (req, res) => {
 
         res.status(200).json({ message: "Page deleted successfully" });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });

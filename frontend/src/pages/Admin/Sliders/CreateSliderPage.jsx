@@ -38,7 +38,6 @@ const CreateSliderPage = () => {
                 message.error("Slider oluşturma başarısız.");
             }
         } catch (error) {
-            console.log("Slider oluşturma hatası:", error);
             message.error("Slider oluşturma başarısız.");
         } finally {
             setLoading(false);

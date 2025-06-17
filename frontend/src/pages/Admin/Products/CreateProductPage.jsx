@@ -23,8 +23,7 @@ const CreateProductPage = () => {
           message.error("Veri getirme başarısız.");
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
-      } finally {
+        } finally {
         setLoading(false);
       }
     };
@@ -62,8 +61,7 @@ const CreateProductPage = () => {
         message.error("Ürün oluşturulurken bir hata oluştu.");
       }
     } catch (error) {
-      console.log("Ürün oluşturma hatası:", error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   };

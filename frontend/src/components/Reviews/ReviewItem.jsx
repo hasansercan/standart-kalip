@@ -8,8 +8,6 @@ const ReviewItem = ({ reviewItem }) => {
     options
   );
 
-  console.log(rating);
-
   return (
     <li className="comment-item">
       <div className="comment-avatar">

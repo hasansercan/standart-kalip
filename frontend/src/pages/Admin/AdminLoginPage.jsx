@@ -45,7 +45,6 @@ const AdminLoginPage = () => {
                 message.error("Giriş başarısız. Bilgilerinizi kontrol edin.");
             }
         } catch (error) {
-            console.log("Giriş hatası:", error);
             message.error("Bir hata oluştu. Lütfen tekrar deneyin.");
         } finally {
             setLoading(false);

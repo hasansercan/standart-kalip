@@ -57,7 +57,6 @@ const CreatePagePage = () => {
                 message.error(errorData.error || "Sayfa oluşturulurken bir hata oluştu!");
             }
         } catch (error) {
-            console.log("Sayfa oluşturma hatası:", error);
             message.error("Bağlantı hatası!");
         } finally {
             setLoading(false);

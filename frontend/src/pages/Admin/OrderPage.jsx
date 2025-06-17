@@ -40,15 +40,12 @@ const OrderPage = () => {
           message.error("Veri getirme başarısız.");
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
-      } finally {
+        } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, [MY_STRIPE_SECRET_KEY]);
-
-  console.log(dataSource);
 
   return (
     <Spin spinning={loading}>

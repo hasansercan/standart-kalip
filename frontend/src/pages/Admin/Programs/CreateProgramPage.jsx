@@ -48,8 +48,7 @@ const CreateProgramPage = () => {
                 message.error("Program oluşturulurken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Program oluşturma hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };

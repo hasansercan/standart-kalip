@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
         const settings = await Settings.find();
         res.status(200).json(settings);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });
@@ -22,7 +21,6 @@ router.get("/:key", async (req, res) => {
         }
         res.status(200).json(setting);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });
@@ -41,7 +39,6 @@ router.post("/", async (req, res) => {
 
         res.status(200).json(setting);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });
@@ -63,7 +60,6 @@ router.put("/:key", async (req, res) => {
 
         res.status(200).json(setting);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });
@@ -79,7 +75,6 @@ router.delete("/:key", async (req, res) => {
 
         res.status(200).json({ message: "Ayar başarıyla silindi." });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });

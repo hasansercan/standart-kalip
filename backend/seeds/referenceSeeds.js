@@ -144,20 +144,12 @@ const references = [
 const seedReferences = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut referans verilerini sil
         await Reference.deleteMany({});
-        console.log("Mevcut referans verileri silindi");
-
         // Yeni referans verilerini ekle
         await Reference.insertMany(references);
-        console.log("Referans verileri başarıyla eklendi");
-
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Referans seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

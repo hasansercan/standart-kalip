@@ -40,8 +40,7 @@ const UpdateProgramPage = () => {
                 message.error("Program bilgileri alınamadı.");
             }
         } catch (error) {
-            console.log("Program bilgileri alınamadı:", error);
-        } finally {
+            } finally {
             setDataLoading(false);
         }
     }, [apiUrl, programId, form]);
@@ -81,8 +80,7 @@ const UpdateProgramPage = () => {
                 message.error("Program güncellenirken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Program güncelleme hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };

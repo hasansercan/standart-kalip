@@ -26,7 +26,6 @@ const DynamicPage = () => {
                     setError("Sayfa yüklenirken bir hata oluştu.");
                 }
             } catch (error) {
-                console.error("Sayfa yüklenirken hata oluştu:", error);
                 setError("Bağlantı hatası oluştu.");
             } finally {
                 setLoading(false);

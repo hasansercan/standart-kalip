@@ -22,8 +22,7 @@ const Reviews = ({ active, singleProduct, setSingleProduct }) => {
           message.error("Veri getirme başarısız.");
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
-      }
+        }
     };
     fetchUsers();
   }, [apiUrl]);

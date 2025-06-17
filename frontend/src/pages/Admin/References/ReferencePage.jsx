@@ -118,8 +118,7 @@ const ReferencePage = () => {
                 message.error("Veri getirme başarısız.");
             }
         } catch (error) {
-            console.log("Veri hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     }, [apiUrl]);
@@ -137,8 +136,7 @@ const ReferencePage = () => {
                 message.error("Silme işlemi başarısız.");
             }
         } catch (error) {
-            console.log("Silme hatası:", error);
-        }
+            }
     };
 
     const toggleReferenceStatus = async (referenceId, newStatus) => {
@@ -158,8 +156,7 @@ const ReferencePage = () => {
                 message.error("Durum güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Durum güncelleme hatası:", error);
-        }
+            }
     };
 
     useEffect(() => {

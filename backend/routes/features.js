@@ -12,7 +12,6 @@ router.post("/", async (req, res) => {
 
         res.status(201).json(newFeature);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -24,7 +23,6 @@ router.get("/", async (req, res) => {
 
         res.status(200).json(features);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -36,7 +34,6 @@ router.get("/active", async (req, res) => {
 
         res.status(200).json(features);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -55,11 +52,9 @@ router.get("/:featureId", async (req, res) => {
 
             res.status(200).json(feature);
         } catch (error) {
-            console.log(error);
             res.status(404).json({ error: "Feature not found." });
         }
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -84,7 +79,6 @@ router.put("/:featureId", async (req, res) => {
 
         res.status(200).json(updatedFeature);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -102,7 +96,6 @@ router.delete("/:featureId", async (req, res) => {
 
         res.status(200).json(deletedFeature);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });

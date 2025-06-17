@@ -23,8 +23,7 @@ const Header = ({ setIsSearchShow }) => {
           setDynamicPages(pages);
         }
       } catch (error) {
-        console.error("Sayfalar yüklenirken hata:", error);
-      }
+        }
     };
 
     fetchPages();

@@ -29,8 +29,7 @@ const CreateFeaturePage = () => {
                 message.error("Özellik oluşturma başarısız.");
             }
         } catch (error) {
-            console.log("Özellik oluşturma hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };

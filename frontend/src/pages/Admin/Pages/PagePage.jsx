@@ -99,8 +99,7 @@ const PagePage = () => {
                 setDataSource(data);
             }
         } catch (error) {
-            console.log("Sayfa verileri getirme hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     }, []);
@@ -118,7 +117,6 @@ const PagePage = () => {
                 message.error("Sayfa silinirken bir hata oluştu!");
             }
         } catch (error) {
-            console.log("Sayfa silme hatası:", error);
             message.error("Bağlantı hatası!");
         }
     };
@@ -148,7 +146,6 @@ const PagePage = () => {
                 }
             }
         } catch (error) {
-            console.log("Sayfa durumu güncelleme hatası:", error);
             message.error("Bağlantı hatası!");
         }
     };

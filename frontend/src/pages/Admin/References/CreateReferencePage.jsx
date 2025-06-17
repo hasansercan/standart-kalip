@@ -38,8 +38,7 @@ const CreateReferencePage = () => {
                 message.error("Referans oluşturulurken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Referans oluşturma hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };
@@ -62,7 +61,6 @@ const CreateReferencePage = () => {
                 message.error("Logo yükleme başarısız.");
             }
         } catch (error) {
-            console.log("Logo yükleme hatası:", error);
             message.error("Logo yükleme başarısız.");
         }
 

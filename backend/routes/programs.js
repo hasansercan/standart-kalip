@@ -22,7 +22,6 @@ router.post("/", async (req, res) => {
 
         res.status(201).json(newProgram);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -34,7 +33,6 @@ router.get("/", async (req, res) => {
 
         res.status(200).json(programs);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -50,7 +48,6 @@ router.get("/active", async (req, res) => {
 
         res.status(200).json(activeProgram);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -65,11 +62,9 @@ router.get("/:programId", async (req, res) => {
 
             res.status(200).json(program);
         } catch (error) {
-            console.log(error);
             res.status(404).json({ error: "Program not found." });
         }
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -94,7 +89,6 @@ router.put("/:programId", async (req, res) => {
 
         res.status(200).json(updatedProgram);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -112,7 +106,6 @@ router.delete("/:programId", async (req, res) => {
 
         res.status(200).json(deletedProgram);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -138,7 +131,6 @@ router.put("/:programId/toggle", async (req, res) => {
 
         res.status(200).json(updatedProgram);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });

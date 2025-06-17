@@ -32,7 +32,6 @@ router.post("/", async (req, res) => {
     const { password: _, ...userResponse } = newUser.toObject();
     res.status(201).json(userResponse);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -44,7 +43,6 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(users);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -62,7 +60,6 @@ router.get("/:userId", async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -108,7 +105,6 @@ router.put("/:userId", async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -131,7 +127,6 @@ router.delete("/:userId", async (req, res) => {
     const deletedUser = await User.findByIdAndDelete(userId);
     res.status(200).json(deletedUser);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -160,7 +155,6 @@ router.patch("/:userId/status", async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });

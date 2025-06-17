@@ -51,7 +51,6 @@ const ReviewForm = ({ singleProduct, setSingleProduct }) => {
       setRating(0);
       message.success("Yorum başarıyla eklendi.");
     } catch (error) {
-      console.log(error);
       message.error("Bir şeyler yanlış gitti.");
     }
   };

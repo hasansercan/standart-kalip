@@ -80,7 +80,6 @@ const About = () => {
                 }
 
             } catch (error) {
-                console.log("Hakkımızda verileri yükleme hatası:", error);
                 setAboutData(defaultAboutData);
                 setFeatures(defaultFeatures);
             } finally {

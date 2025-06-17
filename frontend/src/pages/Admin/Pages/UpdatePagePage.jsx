@@ -38,7 +38,6 @@ const UpdatePagePage = () => {
                 message.error("Sayfa verileri alınırken hata oluştu!");
             }
         } catch (error) {
-            console.log("Sayfa verileri alma hatası:", error);
             message.error("Bağlantı hatası!");
         } finally {
             setDataLoading(false);
@@ -94,7 +93,6 @@ const UpdatePagePage = () => {
                 message.error(errorData.error || "Sayfa güncellenirken bir hata oluştu!");
             }
         } catch (error) {
-            console.log("Sayfa güncelleme hatası:", error);
             message.error("Bağlantı hatası!");
         } finally {
             setLoading(false);

@@ -39,7 +39,6 @@ const UpdateSliderPage = () => {
                 message.error("Slider güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Slider güncelleme hatası:", error);
             message.error("Slider güncelleme başarısız.");
         } finally {
             setLoading(false);
@@ -90,7 +89,6 @@ const UpdateSliderPage = () => {
                 form.setFieldsValue(sliderData);
                 setImagePreview(sliderData.image);
             } catch (error) {
-                console.log("Veri getirme hatası:", error);
                 message.error("Slider verisi alınamadı.");
             } finally {
                 setDataLoading(false);

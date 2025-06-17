@@ -49,20 +49,12 @@ const categoryData = [
 const seedCategories = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut kategori verilerini sil
         await Category.deleteMany({});
-        console.log("Mevcut kategori verileri silindi");
-
         // Yeni kategori verilerini ekle
         await Category.insertMany(categoryData);
-        console.log("Kategori verileri başarıyla eklendi");
-
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

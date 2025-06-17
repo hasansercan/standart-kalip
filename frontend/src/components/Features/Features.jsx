@@ -11,14 +11,11 @@ const Features = () => {
                 const response = await fetch(`${apiUrl}/api/features/active`);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Features data:", data);
                     setFeatures(data);
                 } else {
-                    console.log("API response not ok, using fallback data");
                     setFallbackFeatures();
                 }
             } catch (error) {
-                console.log("Features yükleme hatası:", error);
                 setFallbackFeatures();
             }
         };

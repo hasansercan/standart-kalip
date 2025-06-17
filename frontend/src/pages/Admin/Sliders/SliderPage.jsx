@@ -118,7 +118,6 @@ const SliderPage = () => {
                 message.error("Durum güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Durum güncelleme hatası:", error);
             message.error("Durum güncelleme başarısız.");
         }
     };
@@ -138,7 +137,6 @@ const SliderPage = () => {
                 message.error("Silme işlemi başarısız.");
             }
         } catch (error) {
-            console.log("Silme hatası:", error);
             message.error("Silme işlemi başarısız.");
         }
     };
@@ -146,23 +144,17 @@ const SliderPage = () => {
     useEffect(() => {
         const fetchSliders = async () => {
             setLoading(true);
-            console.log("API URL:", apiUrl);
-
             try {
-                console.log("Slider verileri çekiliyor...");
                 const response = await fetch(`${apiUrl}/api/sliders`);
 
                 if (!response.ok) {
-                    console.error("Response not ok:", response.status, response.statusText);
                     message.error("Slider verisi getirme başarısız.");
                     return;
                 }
 
                 const slidersData = await response.json();
-                console.log("Gelen slider verileri:", slidersData);
                 setDataSource(slidersData);
             } catch (error) {
-                console.error("Veri hatası:", error);
                 message.error("Slider verisi getirme başarısız.");
             } finally {
                 setLoading(false);

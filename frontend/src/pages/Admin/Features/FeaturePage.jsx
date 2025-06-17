@@ -84,8 +84,7 @@ const FeaturePage = () => {
                 message.error("Veri getirme başarısız.");
             }
         } catch (error) {
-            console.log("Veri hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     }, [apiUrl]);
@@ -103,8 +102,7 @@ const FeaturePage = () => {
                 message.error("Silme işlemi başarısız.");
             }
         } catch (error) {
-            console.log("Silme hatası:", error);
-        }
+            }
     };
 
     useEffect(() => {

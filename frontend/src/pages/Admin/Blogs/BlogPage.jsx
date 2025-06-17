@@ -113,7 +113,6 @@ const BlogPage = () => {
                 message.error("Veri getirme başarısız.");
             }
         } catch (error) {
-            console.log("Veri hatası:", error);
             message.error("Veri getirme sırasında hata oluştu.");
         } finally {
             setLoading(false);
@@ -133,7 +132,6 @@ const BlogPage = () => {
                 message.error("Silme işlemi başarısız.");
             }
         } catch (error) {
-            console.log("Silme hatası:", error);
             message.error("Silme işlemi sırasında hata oluştu.");
         }
     };

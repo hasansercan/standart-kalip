@@ -105,7 +105,6 @@ const CareersPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Başvuru gönderildi:", formData);
         alert("Başvurunuz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
         setSelectedPosition(null);
     };

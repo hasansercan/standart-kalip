@@ -54,11 +54,9 @@ const Sliders = () => {
             setSlidesData(fallbackSlides);
           }
         } else {
-          console.log("Slider verisi alınamadı, fallback veriler kullanılıyor");
           setSlidesData(fallbackSlides);
         }
       } catch (error) {
-        console.log("Slider verisi alma hatası:", error);
         setSlidesData(fallbackSlides);
       } finally {
         setLoading(false);

@@ -39,7 +39,6 @@ const UpdateCategoryPage = () => {
         message.error("Kategori güncellenirken bir hata oluştu.");
       }
     } catch (error) {
-      console.log("Kategori güncelleme hatası:", error);
       message.error("Kategori güncellenirken bir hata oluştu.");
     } finally {
       setLoading(false);
@@ -99,7 +98,6 @@ const UpdateCategoryPage = () => {
           setImagePreview(data.img);
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
         message.error("Kategori verisi alınamadı.");
       } finally {
         setLoading(false);

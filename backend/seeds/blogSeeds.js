@@ -175,25 +175,16 @@ const blogData = [
 const seedBlogs = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB'ye bağlandı");
-
         // Mevcut blog verilerini sil
         await Blog.deleteMany({});
-        console.log("Mevcut blog verileri silindi");
-
         // Yeni blog verilerini tek tek kaydet (middleware çalışması için)
         for (const blogItem of blogData) {
             const blog = new Blog(blogItem);
             await blog.save();
-            console.log(`Blog kaydedildi: ${blog.title} - Slug: ${blog.slug}`);
-        }
-
-        console.log(`Toplam ${blogData.length} blog verisi başarıyla eklendi`);
+            }
 
         mongoose.connection.close();
-        console.log("Veritabanı bağlantısı kapatıldı");
-    } catch (error) {
-        console.error("Seed işlemi sırasında hata:", error);
+        } catch (error) {
         process.exit(1);
     }
 };

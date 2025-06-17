@@ -46,8 +46,7 @@ const Products = () => {
           message.error("Veri getirme başarısız.");
         }
       } catch (error) {
-        console.log("Veri hatası:", error);
-      }
+        }
     };
     fetchProducts();
   }, [apiUrl]);

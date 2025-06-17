@@ -85,8 +85,7 @@ const ProgramPage = () => {
                 message.error("Veri getirme başarısız.");
             }
         } catch (error) {
-            console.log("Veri hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     }, [apiUrl]);
@@ -104,8 +103,7 @@ const ProgramPage = () => {
                 message.error("Silme işlemi başarısız.");
             }
         } catch (error) {
-            console.log("Silme hatası:", error);
-        }
+            }
     };
 
     const toggleProgramStatus = async (programId) => {
@@ -121,8 +119,7 @@ const ProgramPage = () => {
                 message.error("Durum güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Durum güncelleme hatası:", error);
-        }
+            }
     };
 
     useEffect(() => {

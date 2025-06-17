@@ -33,7 +33,6 @@ const CreateUserPage = () => {
                 message.error(errorData.error || "Kullanıcı oluşturulurken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Kullanıcı oluşturma hatası:", error);
             message.error("Kullanıcı oluşturulurken bir hata oluştu.");
         } finally {
             setLoading(false);

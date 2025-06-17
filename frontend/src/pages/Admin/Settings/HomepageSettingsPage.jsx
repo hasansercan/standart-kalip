@@ -64,7 +64,6 @@ const HomepageSettingsPage = () => {
                 message.error("Ayarlar yüklenirken hata oluştu");
             }
         } catch (error) {
-            console.error("Settings fetch error:", error);
             message.error("Ayarlar yüklenirken hata oluştu");
         } finally {
             setLoading(false);
@@ -103,7 +102,6 @@ const HomepageSettingsPage = () => {
             message.success("Ayarlar başarıyla güncellendi!");
 
         } catch (error) {
-            console.error("Settings update error:", error);
             message.error(error.message || "Ayarlar güncellenirken hata oluştu");
         } finally {
             setSaving(false);

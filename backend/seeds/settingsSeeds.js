@@ -39,20 +39,17 @@ const seedSettings = async () => {
 
         if (existingSettings.length === 0) {
             await Settings.insertMany(defaultSettings);
-            console.log("✅ Default settings seeded successfully");
-        } else {
+            } else {
             // Eksik ayarları ekle
             for (const setting of defaultSettings) {
                 const existingSetting = await Settings.findOne({ settingKey: setting.settingKey });
                 if (!existingSetting) {
                     await Settings.create(setting);
-                    console.log(`✅ Added missing setting: ${setting.settingKey}`);
-                }
+                    }
             }
         }
     } catch (error) {
-        console.log("❌ Settings seeding error:", error);
-    }
+        }
 };
 
 module.exports = seedSettings;

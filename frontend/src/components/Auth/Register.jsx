@@ -38,8 +38,7 @@ const Register = () => {
         message.error("Kayıt başarısız.");
       }
     } catch (error) {
-      console.log("Giriş hatası:", error);
-    }
+      }
   };
 
   return (

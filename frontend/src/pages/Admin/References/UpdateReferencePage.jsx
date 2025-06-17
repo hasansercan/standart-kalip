@@ -38,8 +38,7 @@ const UpdateReferencePage = () => {
                 message.error("Referans bilgileri alınamadı.");
             }
         } catch (error) {
-            console.log("Referans bilgileri alınamadı:", error);
-        } finally {
+            } finally {
             setDataLoading(false);
         }
     }, [apiUrl, referenceId, form]);
@@ -70,8 +69,7 @@ const UpdateReferencePage = () => {
                 message.error("Referans güncellenirken bir hata oluştu.");
             }
         } catch (error) {
-            console.log("Referans güncelleme hatası:", error);
-        } finally {
+            } finally {
             setLoading(false);
         }
     };
@@ -94,7 +92,6 @@ const UpdateReferencePage = () => {
                 message.error("Logo yükleme başarısız.");
             }
         } catch (error) {
-            console.log("Logo yükleme hatası:", error);
             message.error("Logo yükleme başarısız.");
         }
 

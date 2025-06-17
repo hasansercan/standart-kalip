@@ -41,11 +41,9 @@ const ProgramDownload = () => {
                     setProgramData(data);
                 } else {
                     // Eğer aktif program yoksa varsayılan veriyi kullan
-                    console.log("Aktif program bulunamadı, varsayılan veri kullanılıyor");
                     setProgramData(defaultProgramData);
                 }
             } catch (error) {
-                console.error("Program verisi alınırken hata:", error);
                 setError("Program bilgileri yüklenirken bir hata oluştu");
                 setProgramData(defaultProgramData);
             } finally {

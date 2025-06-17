@@ -39,7 +39,7 @@ const Login = () => {
         message.error("Giriş başarısız.");
       }
     } catch (error) {
-      console.log("Giriş hatası:", error);
+      message.error("Bağlantı hatası. Lütfen tekrar deneyin.");
     }
   };
 

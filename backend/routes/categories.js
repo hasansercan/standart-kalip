@@ -13,7 +13,6 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(newCategory);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -25,7 +24,6 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(categories);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -40,11 +38,9 @@ router.get("/:categoryId", async (req, res) => {
 
       res.status(200).json(category);
     } catch (error) {
-      console.log(error);
       res.status(404).json({ error: "Category not found." });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -69,7 +65,6 @@ router.put("/:categoryId", async (req, res) => {
 
     res.status(200).json(updatedCategory);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -87,7 +82,6 @@ router.delete("/:categoryId", async (req, res) => {
 
     res.status(200).json(deletedCategory);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error." });
   }
 });
@@ -108,7 +102,6 @@ router.post("/upload", categoryUpload.single('image'), (req, res) => {
       filename: req.file.filename
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Dosya yükleme hatası" });
   }
 });

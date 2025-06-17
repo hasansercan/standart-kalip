@@ -82,8 +82,7 @@ const ProductPage = () => {
         message.error("Silme işlemi başarısız.");
       }
     } catch (error) {
-      console.log("Silme hatası:", error);
-    }
+      }
   };
 
   useEffect(() => {
@@ -119,8 +118,7 @@ const ProductPage = () => {
 
         setDataSource(productsWithCategories);
       } catch (error) {
-        console.log("Veri hatası:", error);
-      } finally {
+        } finally {
         setLoading(false);
       }
     };

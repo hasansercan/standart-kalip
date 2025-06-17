@@ -16,14 +16,30 @@ dotenv.config();
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to mongoDb");
+    if (process.env.NODE_ENV !== 'production') {
+    }
   } catch (error) {
     throw error;
   }
 };
 
 // middlewares
-app.use(logger("dev"));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(logger("dev"));
+}
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -56,7 +72,8 @@ const initialize = async () => {
     await seedSettings();
     await seedPages();
     isInitialized = true;
-    console.log("Database initialized");
+    if (process.env.NODE_ENV !== 'production') {
+    }
   }
 };
 
@@ -68,6 +85,7 @@ if (process.env.NODE_ENV === 'production') {
   // For local development
   app.listen(port, async () => {
     await initialize();
-    console.log(`Sunucu ${port} portunda çalışıyor.`);
+    if (process.env.NODE_ENV !== 'production') {
+    }
   });
 }

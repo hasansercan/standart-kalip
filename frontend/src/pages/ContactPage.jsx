@@ -19,7 +19,6 @@ const ContactPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("İletişim formu gönderildi:", formData);
     alert("Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
     setFormData({
       name: "",

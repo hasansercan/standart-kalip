@@ -687,13 +687,10 @@ const seedPages = async () => {
         for (const page of pages) {
             const newPage = new Page(page);
             await newPage.save();
-            console.log(`✓ ${page.title} sayfası eklendi`);
-        }
+            }
 
-        console.log("✅ Tüm sayfalar başarıyla eklendi");
-    } catch (error) {
-        console.error("❌ Sayfalar eklenirken hata oluştu:", error);
-    }
+        } catch (error) {
+        }
 };
 
 module.exports = seedPages;

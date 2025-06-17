@@ -19,7 +19,6 @@ router.post("/upload", blogUpload.single("image"), (req, res) => {
             fileName: req.file.filename
         });
     } catch (error) {
-        console.log("Resim yükleme hatası:", error);
         res.status(500).json({ error: "Resim yükleme sırasında hata oluştu." });
     }
 });
@@ -45,7 +44,6 @@ router.post("/", async (req, res) => {
 
         res.status(201).json(newBlog);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -57,7 +55,6 @@ router.get("/", async (req, res) => {
 
         res.status(200).json(blogs);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -69,7 +66,6 @@ router.get("/published", async (req, res) => {
 
         res.status(200).json(blogs);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -91,7 +87,6 @@ router.get("/slug/:slug", async (req, res) => {
 
         res.status(200).json(blog);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -109,7 +104,6 @@ router.get("/:blogId", async (req, res) => {
 
         res.status(200).json(blog);
     } catch (error) {
-        console.log(error);
         res.status(404).json({ error: "Blog not found." });
     }
 });
@@ -134,7 +128,6 @@ router.put("/:blogId", async (req, res) => {
 
         res.status(200).json(updatedBlog);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -152,7 +145,6 @@ router.delete("/:blogId", async (req, res) => {
 
         res.status(200).json(deletedBlog);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -168,7 +160,6 @@ router.get("/category/:category", async (req, res) => {
 
         res.status(200).json(blogs);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });
@@ -184,7 +175,6 @@ router.get("/tag/:tag", async (req, res) => {
 
         res.status(200).json(blogs);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error." });
     }
 });

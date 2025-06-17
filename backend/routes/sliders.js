@@ -9,7 +9,6 @@ router.get("/", async (req, res) => {
         const sliders = await Slider.find().sort({ order: 1 });
         res.status(200).json(sliders);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -20,7 +19,6 @@ router.get("/active", async (req, res) => {
         const sliders = await Slider.find({ isActive: true }).sort({ order: 1 });
         res.status(200).json(sliders);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -37,7 +35,6 @@ router.get("/:sliderId", async (req, res) => {
 
         res.status(200).json(slider);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -70,7 +67,6 @@ router.post("/", async (req, res) => {
         await newSlider.save();
         res.status(201).json(newSlider);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -94,7 +90,6 @@ router.put("/:sliderId", async (req, res) => {
 
         res.status(200).json(updatedSlider);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -111,7 +106,6 @@ router.delete("/:sliderId", async (req, res) => {
 
         res.status(200).json(deletedSlider);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -132,7 +126,6 @@ router.post("/upload", sliderUpload.single('image'), (req, res) => {
             filename: req.file.filename
         });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Dosya yükleme hatası" });
     }
 });

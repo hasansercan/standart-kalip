@@ -46,7 +46,6 @@ const UpdateBlogPage = () => {
                     navigate("/admin/blogs");
                 }
             } catch (error) {
-                console.log("Blog veri alma hatası:", error);
                 message.error("Blog verisi alınamadı");
                 navigate("/admin/blogs");
             } finally {
@@ -93,7 +92,6 @@ const UpdateBlogPage = () => {
                 message.error('Resim yükleme başarısız.');
             }
         } catch (error) {
-            console.error('Resim yükleme hatası:', error);
             message.error('Resim yükleme sırasında hata oluştu.');
         } finally {
             setImageUploading(false);
@@ -135,7 +133,6 @@ const UpdateBlogPage = () => {
                 message.error("Blog güncelleme başarısız.");
             }
         } catch (error) {
-            console.log("Blog güncelleme hatası:", error);
             message.error("Blog güncelleme sırasında hata oluştu.");
         } finally {
             setLoading(false);
