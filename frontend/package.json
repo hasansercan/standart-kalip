@@ -22,7 +22,6 @@
     "react-slick": "^0.29.0",
     "recharts": "^2.8.0",
     "slick-carousel": "^1.8.1",
-    "standart-kalip": "file:..",
     "swiper": "^11.2.8"
   },
   "devDependencies": {
