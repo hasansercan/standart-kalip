@@ -12,14 +12,24 @@ const handler = serverless(app, {
             process.env.NODE_ENV = 'production';
         }
 
-        // API base path'i düzelt
+        console.log('Original URL:', request.url);
+
+        // API base path'i düzelt - duplicate /api/ önle
         if (request.url.startsWith('/.netlify/functions/api')) {
             request.url = request.url.replace('/.netlify/functions/api', '');
         }
 
-        if (!request.url.startsWith('/api') && request.url !== '/') {
+        // Eğer URL /api ile başlamıyorsa ekle (root hariç)
+        if (!request.url.startsWith('/api') && request.url !== '/' && request.url !== '') {
             request.url = '/api' + request.url;
         }
+
+        // Eğer sadece / ise health check yap
+        if (request.url === '/') {
+            request.url = '/api/health';
+        }
+
+        console.log('Processed URL:', request.url);
     }
 });
 
@@ -27,8 +37,17 @@ module.exports.handler = async (event, context) => {
     // Netlify context'i ayarla
     context.callbackWaitsForEmptyEventLoop = false;
 
+    console.log('Event path:', event.path);
+    console.log('Environment check:', {
+        NODE_ENV: process.env.NODE_ENV,
+        MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
+        NETLIFY: process.env.NETLIFY
+    });
+
     try {
         const result = await handler(event, context);
+
+        console.log('API response status:', result.statusCode);
 
         return {
             ...result,
@@ -44,11 +63,14 @@ module.exports.handler = async (event, context) => {
         };
     } catch (error) {
         console.error('Netlify function error:', error);
+        console.error('Error stack:', error.stack);
+
         return {
             statusCode: 500,
             body: JSON.stringify({
                 error: 'Internal server error',
-                message: error.message
+                message: error.message,
+                timestamp: new Date().toISOString()
             }),
             headers: {
                 'Content-Type': 'application/json',
