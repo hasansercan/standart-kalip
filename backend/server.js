@@ -43,12 +43,12 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// CORS configuration for Vercel
+// CORS configuration for Netlify
 app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://standart-kalip.vercel.app',
+    'https://standart-kalip.netlify.app',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true,
