@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^2.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
     "antd": "^5.9.3",
     "framer-motion": "^12.18.1",
     "lottie-react": "^2.4.1",
@@ -22,10 +23,7 @@
     "react-slick": "^0.29.0",
     "recharts": "^2.8.0",
     "slick-carousel": "^1.8.1",
-    "swiper": "^11.2.8"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.3",
+    "swiper": "^11.2.8",
     "vite": "^4.4.5"
   },
   "engines": {

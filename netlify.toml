@@ -1,6 +1,6 @@
 [build]
   publish = "frontend/dist"
-  command = "npm ci && cd frontend && npm ci && npx vite build"
+  command = "npm ci && cd frontend && npm ci && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
