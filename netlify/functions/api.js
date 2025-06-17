@@ -13,23 +13,17 @@ const handler = serverless(app, {
         }
 
         console.log('Original URL:', request.url);
+        console.log('Event path:', event.path);
 
-        // API base path'i düzelt - duplicate /api/ önle
-        if (request.url.startsWith('/.netlify/functions/api')) {
-            request.url = request.url.replace('/.netlify/functions/api', '');
-        }
-
-        // Eğer URL /api ile başlamıyorsa ekle (root hariç)
-        if (!request.url.startsWith('/api') && request.url !== '/' && request.url !== '') {
+        // Netlify redirect ile gelen URL'i düzelt
+        // /api/settings -> event.path'ten alınacak
+        if (event.path) {
+            request.url = '/api' + event.path;
+        } else if (!request.url.startsWith('/api')) {
             request.url = '/api' + request.url;
         }
 
-        // Eğer sadece / ise health check yap
-        if (request.url === '/') {
-            request.url = '/api/health';
-        }
-
-        console.log('Processed URL:', request.url);
+        console.log('Final URL:', request.url);
     }
 });
 
@@ -37,7 +31,12 @@ module.exports.handler = async (event, context) => {
     // Netlify context'i ayarla
     context.callbackWaitsForEmptyEventLoop = false;
 
-    console.log('Event path:', event.path);
+    console.log('Event details:', {
+        path: event.path,
+        httpMethod: event.httpMethod,
+        headers: event.headers
+    });
+
     console.log('Environment check:', {
         NODE_ENV: process.env.NODE_ENV,
         MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
@@ -70,7 +69,8 @@ module.exports.handler = async (event, context) => {
             body: JSON.stringify({
                 error: 'Internal server error',
                 message: error.message,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                path: event.path
             }),
             headers: {
                 'Content-Type': 'application/json',
