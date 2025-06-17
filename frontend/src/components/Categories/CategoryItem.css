@@ -1,0 +1,38 @@
+/* CategoryItem stilleri artık Categories.css içinde tanımlı */
+/* Bu dosya geriye uyumluluk için korunuyor */
+
+.categories .category-item {
+    /* Tüm stiller Categories.css'te */
+}
+
+.categories .category-item:hover {
+    /* Tüm stiller Categories.css'te */
+}
+
+.categories .category-item a {
+    /* Tüm stiller Categories.css'te */
+}
+
+.category-content {
+    /* Tüm stiller Categories.css'te */
+}
+
+.category-icon {
+    /* Tüm stiller Categories.css'te */
+}
+
+.category-icon .icon {
+    /* Tüm stiller Categories.css'te */
+}
+
+.categories .category-item .category-image {
+    /* Tüm stiller Categories.css'te */
+}
+
+.categories .category-item:hover .category-image {
+    /* Tüm stiller Categories.css'te */
+}
+
+.category-title {
+    /* Tüm stiller Categories.css'te */
+}

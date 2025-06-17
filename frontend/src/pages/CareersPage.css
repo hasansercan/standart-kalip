@@ -1,0 +1,91 @@
+/* Careers Page Styles - Sadece Hero Section */
+
+.careers-page {
+    overflow-x: hidden;
+}
+
+/* Hero Section */
+.careers-page .hero-section {
+    height: 450px;
+    background: linear-gradient(135deg, #8b2635 0%, #a91d3a 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-attachment: fixed;
+}
+
+.careers-page .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/img/products/product1/1.png') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.careers-page .hero-overlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.careers-page .hero-content {
+    text-align: center;
+    color: white;
+}
+
+.careers-page .hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.careers-page .hero-content p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.careers-page .breadcrumb {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.careers-page .breadcrumb a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.careers-page .breadcrumb a:hover {
+    color: #f8f9fa;
+}
+
+.careers-page .breadcrumb span {
+    color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .careers-page .hero-content h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .careers-page .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .careers-page .hero-content p {
+        font-size: 1.1rem;
+    }
+}

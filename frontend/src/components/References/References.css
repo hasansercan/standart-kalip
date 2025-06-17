@@ -1,0 +1,450 @@
+/*! references start */
+.references {
+    padding: 100px 0;
+    background: #f8fafc;
+    position: relative;
+}
+
+.references .section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.references .section-title h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.references .section-title p {
+    font-size: 16px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* References Slider */
+.references-slider {
+    position: relative;
+    overflow: visible;
+    margin-bottom: 80px;
+    padding: 0 60px;
+}
+
+.references-slider-wrapper {
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.references-slides {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+}
+
+.references-slide {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Reference Item */
+.reference-item {
+    background: white;
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.reference-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #8b2635, #b73e56);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.reference-item:hover::before {
+    transform: scaleX(1);
+}
+
+.reference-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    border-color: rgba(139, 38, 53, 0.2);
+}
+
+.reference-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.reference-item:hover .reference-logo {
+    background: #e2e8f0;
+    transform: scale(1.05);
+}
+
+.reference-logo img {
+    max-width: 70px;
+    max-height: 70px;
+    object-fit: contain;
+    filter: grayscale(1);
+    transition: all 0.3s ease;
+}
+
+.reference-item:hover .reference-logo img {
+    filter: grayscale(0);
+}
+
+.reference-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reference-info .sector {
+    font-size: 12px;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+}
+
+/* Navigation Buttons */
+.references-nav-btn {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.references-nav-btn:hover {
+    background: #8b2635;
+    border-color: #8b2635;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.references-prev {
+    left: 10px;
+}
+
+.references-next {
+    right: 10px;
+}
+
+.references-nav-btn i {
+    font-size: 16px;
+    color: #64748b;
+    transition: color 0.3s ease;
+}
+
+.references-nav-btn:hover i {
+    color: white;
+}
+
+/* Dots Indicator */
+.references-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+}
+
+.references-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.references-dot.active {
+    background: #8b2635;
+    transform: scale(1.2);
+}
+
+.references-dot:hover {
+    background: #8b2635;
+    transform: scale(1.1);
+}
+
+/* References Stats */
+.references-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #8b2635;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #8b2635, #b73e56);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .references {
+        padding: 80px 0;
+    }
+
+    .references .section-title h2 {
+        font-size: 28px;
+    }
+
+    .references-slider {
+        padding: 0 50px;
+    }
+
+    .references-slide {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .references-nav-btn {
+        top: 35%;
+    }
+
+    .references-prev {
+        left: 8px;
+    }
+
+    .references-next {
+        right: 8px;
+    }
+
+    .references-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .stat-number {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .references {
+        padding: 60px 0;
+    }
+
+    .references .section-title h2 {
+        font-size: 24px;
+    }
+
+    .references .section-title {
+        margin-bottom: 40px;
+    }
+
+    .references-slider {
+        padding: 0 40px;
+    }
+
+    .references-slide {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .reference-item {
+        padding: 20px 15px;
+    }
+
+    .reference-logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 15px;
+    }
+
+    .reference-logo img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    .reference-info h4 {
+        font-size: 12px;
+    }
+
+    .reference-info .sector {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .references-nav-btn {
+        width: 35px;
+        height: 35px;
+        top: 30%;
+    }
+
+    .references-nav-btn i {
+        font-size: 14px;
+    }
+
+    .references-prev {
+        left: 6px;
+    }
+
+    .references-next {
+        right: 6px;
+    }
+
+    .references-stats {
+        margin-bottom: 40px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .references {
+        padding: 40px 0;
+    }
+
+    .references .section-title h2 {
+        font-size: 20px;
+    }
+
+    .references-slider {
+        padding: 0 30px;
+    }
+
+    .references-slide {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .reference-item {
+        padding: 15px 10px;
+    }
+
+    .reference-logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 12px;
+    }
+
+    .reference-logo img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .reference-info h4 {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    .reference-info .sector {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .references-nav-btn {
+        width: 30px;
+        height: 30px;
+        top: 25%;
+    }
+
+    .references-nav-btn i {
+        font-size: 12px;
+    }
+
+    .references-prev {
+        left: 5px;
+    }
+
+    .references-next {
+        right: 5px;
+    }
+
+    .references-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 30px 0;
+    }
+
+    .stat-item {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+}
+
+/*! references end */

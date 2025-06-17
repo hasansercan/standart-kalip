@@ -1,0 +1,28 @@
+{
+  // Tema ve ikonlar
+  "workbench.colorTheme": "GitHub Dark Default",
+  "workbench.iconTheme": "material-icon-theme",
+  // Yazı tipi ve editör
+  "editor.fontFamily": "Fira Code, Consolas, monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14,
+  "editor.lineHeight": 16,
+  "editor.tabSize": 4,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  // Otomatik kayıt ve temizlik
+  "files.autoSave": "onFocusChange",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  // Explorer boşluk ayarı
+  "workbench.tree.indent": 16,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.tree.expandMode": "doubleClick",
+  // Terminal
+  "terminal.integrated.fontSize": 14,
+  // Zoom
+  "window.zoomLevel": 1
+}

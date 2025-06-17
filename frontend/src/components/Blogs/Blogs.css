@@ -1,0 +1,290 @@
+/*! blogs start  */
+.blogs {
+  padding: 80px 0 120px 0;
+  background: #f8fafc;
+}
+
+.blogs .section-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.blogs .section-title h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 15px;
+}
+
+.blogs .section-title p {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Loading State */
+.blogs-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #64748b;
+}
+
+.blogs-loading p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* Empty State */
+.blogs-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.blogs-empty h2 {
+  font-size: 24px;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+/* Blog Slider Container */
+.blog-slider {
+  position: relative;
+  overflow: visible;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 80px 40px 80px;
+}
+
+.blog-slider-wrapper {
+  overflow: visible;
+  border-radius: 20px;
+  padding-bottom: 20px;
+}
+
+.blog-slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.blog-slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 20px;
+}
+
+/* Navigation Buttons */
+.blog-nav-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.blog-nav-btn:hover {
+  background: #8b2635;
+  border-color: #8b2635;
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.blog-prev {
+  left: 15px;
+}
+
+.blog-next {
+  right: 15px;
+}
+
+.blog-nav-btn i {
+  font-size: 18px;
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+.blog-nav-btn:hover i {
+  color: white;
+}
+
+/* Dots Indicator */
+.blog-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 50px;
+  padding-bottom: 20px;
+}
+
+.blog-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.blog-dot.active {
+  background: #8b2635;
+  transform: scale(1.2);
+}
+
+.blog-dot:hover {
+  background: #8b2635;
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .blogs {
+    padding: 60px 0 100px 0;
+  }
+
+  .blogs .section-title h2 {
+    font-size: 28px;
+  }
+
+  .blog-slider {
+    padding: 0 60px 30px 60px;
+  }
+
+  .blog-slide {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 15px;
+  }
+
+  .blog-nav-btn {
+    width: 40px;
+    height: 40px;
+    top: 35%;
+  }
+
+  .blog-nav-btn i {
+    font-size: 16px;
+  }
+
+  .blog-prev {
+    left: 10px;
+  }
+
+  .blog-next {
+    right: 10px;
+  }
+
+  .blog-dots {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .blogs {
+    padding: 40px 0 80px 0;
+  }
+
+  .blogs .section-title {
+    margin-bottom: 40px;
+  }
+
+  .blogs .section-title h2 {
+    font-size: 24px;
+  }
+
+  .blogs .section-title p {
+    font-size: 14px;
+  }
+
+  .blog-slider {
+    padding: 0 50px 25px 50px;
+  }
+
+  .blog-slide {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .blog-nav-btn {
+    width: 35px;
+    height: 35px;
+    top: 30%;
+  }
+
+  .blog-nav-btn i {
+    font-size: 14px;
+  }
+
+  .blog-prev {
+    left: 8px;
+  }
+
+  .blog-next {
+    right: 8px;
+  }
+
+  .blog-dots {
+    margin-top: 30px;
+  }
+
+  .blog-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .blogs {
+    padding: 30px 0 60px 0;
+  }
+
+  .blog-slider {
+    padding: 0 40px 20px 40px;
+  }
+
+  .blog-slide {
+    padding: 8px;
+    gap: 15px;
+  }
+
+  .blog-nav-btn {
+    width: 30px;
+    height: 30px;
+    top: 25%;
+  }
+
+  .blog-nav-btn i {
+    font-size: 12px;
+  }
+
+  .blog-prev {
+    left: 5px;
+  }
+
+  .blog-next {
+    right: 5px;
+  }
+
+  .blog-dots {
+    margin-top: 25px;
+  }
+}
+
+/*! blogs end  */
