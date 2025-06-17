@@ -11,6 +11,24 @@ const Header = ({ setIsSearchShow }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [dynamicPages, setDynamicPages] = useState([]);
+
+  // Dinamik sayfaları yükle
+  useEffect(() => {
+    const fetchPages = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/pages`);
+        if (response.ok) {
+          const pages = await response.json();
+          setDynamicPages(pages);
+        }
+      } catch (error) {
+        console.error("Sayfalar yüklenirken hata:", error);
+      }
+    };
+
+    fetchPages();
+  }, []);
 
   // Scroll effect için
   useEffect(() => {
@@ -201,96 +219,127 @@ const Header = ({ setIsSearchShow }) => {
                   zIndex: "999",
                   border: "1px solid #f0f0f0"
                 }}>
-                  <Link to="/about" style={{
-                    display: "block",
-                    padding: "10px 20px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease"
-                  }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.color = "#8B1538";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "#333";
-                    }}>
-                    Hakkımızda
-                  </Link>
-                  <Link to="/mission-vision" style={{
-                    display: "block",
-                    padding: "10px 20px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease"
-                  }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.color = "#8B1538";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "#333";
-                    }}>
-                    Misyon & Vizyon
-                  </Link>
-                  <Link to="/history" style={{
-                    display: "block",
-                    padding: "10px 20px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease"
-                  }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.color = "#8B1538";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "#333";
-                    }}>
-                    Tarihçemiz
-                  </Link>
-                  <Link to="/certificates" style={{
-                    display: "block",
-                    padding: "10px 20px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease"
-                  }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.color = "#8B1538";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "#333";
-                    }}>
-                    Sertifikalarımız
-                  </Link>
-                  <Link to="/facilities" style={{
-                    display: "block",
-                    padding: "10px 20px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease"
-                  }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.color = "#8B1538";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "#333";
-                    }}>
-                    Tesislerimiz
-                  </Link>
+                  {/* Dinamik Sayfalar */}
+                  {dynamicPages.map((page) => (
+                    <Link
+                      key={page._id}
+                      to={`/page/${page.slug}`}
+                      style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#f8f9fa";
+                        e.target.style.color = "#8B1538";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.color = "#333";
+                      }}
+                    >
+                      {page.title}
+                    </Link>
+                  ))}
+
+                  {/* Eğer dinamik sayfa yoksa statik sayfaları göster */}
+                  {dynamicPages.length === 0 && (
+                    <>
+                      <Link to="/about" style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f8f9fa";
+                          e.target.style.color = "#8B1538";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.color = "#333";
+                        }}>
+                        Hakkımızda
+                      </Link>
+                      <Link to="/mission-vision" style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f8f9fa";
+                          e.target.style.color = "#8B1538";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.color = "#333";
+                        }}>
+                        Misyon & Vizyon
+                      </Link>
+                      <Link to="/history" style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f8f9fa";
+                          e.target.style.color = "#8B1538";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.color = "#333";
+                        }}>
+                        Tarihçemiz
+                      </Link>
+                      <Link to="/certificates" style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f8f9fa";
+                          e.target.style.color = "#8B1538";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.color = "#333";
+                        }}>
+                        Sertifikalarımız
+                      </Link>
+                      <Link to="/facilities" style={{
+                        display: "block",
+                        padding: "10px 20px",
+                        color: "#333",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "all 0.3s ease"
+                      }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f8f9fa";
+                          e.target.style.color = "#8B1538";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.color = "#333";
+                        }}>
+                        Tesislerimiz
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -439,7 +488,7 @@ const Header = ({ setIsSearchShow }) => {
               {/* Admin Panel Erişimi */}
               {user && JSON.parse(user).role === "admin" && (
                 <Link
-                  to="/admin"
+                  to="/admin/dashboard"
                   style={{
                     color: "#dc3545",
                     textDecoration: "none",

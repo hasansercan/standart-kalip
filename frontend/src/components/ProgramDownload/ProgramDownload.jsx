@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './ProgramDownload.css';
 
 const ProgramDownload = () => {
-    const programData = {
+    const [programData, setProgramData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // Varsayılan program verisi (fallback)
+    const defaultProgramData = {
         name: "Standart Kalıp CAD Program",
         version: "v2.5.1",
         description: "Endüstriyel kalıp tasarımı ve üretimi için özel olarak geliştirilmiş profesyonel CAD yazılımı. Tüm kalıp elemanlarınızı kolayca tasarlayın ve optimize edin.",
@@ -24,10 +30,70 @@ const ProgramDownload = () => {
         lastUpdate: "15 Ocak 2024"
     };
 
+    useEffect(() => {
+        const fetchProgramData = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`${apiUrl}/api/programs/active`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setProgramData(data);
+                } else {
+                    // Eğer aktif program yoksa varsayılan veriyi kullan
+                    console.log("Aktif program bulunamadı, varsayılan veri kullanılıyor");
+                    setProgramData(defaultProgramData);
+                }
+            } catch (error) {
+                console.error("Program verisi alınırken hata:", error);
+                setError("Program bilgileri yüklenirken bir hata oluştu");
+                setProgramData(defaultProgramData);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProgramData();
+    }, [apiUrl]);
+
     const handleDownload = () => {
-        // Download logic will be implemented
-        alert('Program indirme işlemi başlatılacak...');
+        if (programData && programData.downloadLink && programData.downloadLink !== "#") {
+            window.open(programData.downloadLink, '_blank');
+        } else {
+            alert('Program indirme işlemi başlatılacak...');
+        }
     };
+
+    if (loading) {
+        return (
+            <section className="program-download">
+                <div className="container">
+                    <div className="section-title">
+                        <h2>Profesyonel Tasarım Yazılımı</h2>
+                        <p>Yükleniyor...</p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="program-download">
+                <div className="container">
+                    <div className="section-title">
+                        <h2>Profesyonel Tasarım Yazılımı</h2>
+                        <p style={{ color: '#e74c3c' }}>{error}</p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // Program verisi yoksa hiçbir şey render etme
+    if (!programData) {
+        return null;
+    }
 
     return (
         <section className="program-download">
@@ -60,7 +126,7 @@ const ProgramDownload = () => {
                         <div className="program-features">
                             <h4>Özellikler</h4>
                             <ul>
-                                {programData.features.map((feature, index) => (
+                                {programData.features && programData.features.map((feature, index) => (
                                     <li key={index}>
                                         <i className="bi bi-check-circle-fill"></i>
                                         {feature}
@@ -112,28 +178,23 @@ const ProgramDownload = () => {
                                                 </div>
                                             </div>
                                             <div className="workspace">
-                                                <div className="design-area">
-                                                    <div className="design-object obj1"></div>
-                                                    <div className="design-object obj2"></div>
-                                                    <div className="design-object obj3"></div>
-                                                </div>
-                                                <div className="properties-panel">
-                                                    <div className="property"></div>
-                                                    <div className="property"></div>
-                                                    <div className="property"></div>
+                                                <div className="grid-pattern"></div>
+                                                <div className="design-elements">
+                                                    <div className="element rect"></div>
+                                                    <div className="element circle"></div>
+                                                    <div className="element line"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="laptop-base"></div>
                             </div>
                         </div>
 
                         <div className="system-requirements">
                             <h4>Sistem Gereksinimleri</h4>
                             <ul>
-                                {programData.systemRequirements.map((req, index) => (
+                                {programData.systemRequirements && programData.systemRequirements.map((req, index) => (
                                     <li key={index}>
                                         <i className="bi bi-gear-fill"></i>
                                         {req}

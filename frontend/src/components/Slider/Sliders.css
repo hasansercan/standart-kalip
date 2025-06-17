@@ -1,5 +1,18 @@
+/* Ken Burns Effect for background image */
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  100% {
+    transform: scale(1.1) translate(-2%, 2%);
+  }
+}
+
 .slider {
   position: relative;
+  overflow: hidden;
+  /* Ken burns effect'in taşmasını engelle */
 }
 
 .slider-item {
@@ -24,6 +37,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  animation: kenburns 20s ease-out infinite alternate-reverse both;
 }
 
 .slider-overlay {
@@ -32,169 +46,200 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg,
-      rgba(30, 60, 114, 0.8) 0%,
-      rgba(42, 82, 152, 0.6) 100%);
+  background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0) 100%);
   z-index: 1;
 }
 
 .slider-content {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: 650px;
+  /* İçerik genişliği artırıldı */
   color: white;
+  padding-left: 2rem;
+  /* Soldan hafif boşluk */
 }
 
 .slider-subtitle {
-  font-size: 16px;
-  font-weight: 500;
-  color: #ffd700;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e4e4e4;
+  /* Daha yumuşak bir ton */
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   display: block;
 }
 
 .slider-title {
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 3.5rem;
+  /* Boyut artırıldı */
+  font-weight: 800;
+  /* Daha kalın font */
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  /* Daha belirgin gölge */
 }
 
 .slider-description {
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 30px;
-  color: #e8f4fd;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  color: #f0f0f0;
   font-weight: 400;
+  max-width: 550px;
+  /* Açıklama satır uzunluğu kısıtlandı */
 }
 
+/* Kurumsal Buton Stili */
 .slider-content .btn {
-  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-  border: none;
+  background-color: #ee403d;
+  /* Kurumsal kırmızı renk */
+  border: 2px solid #ee403d;
   color: white;
-  padding: 15px 30px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 8px;
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 5px;
+  /* Daha keskin kenarlar */
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .slider-content .btn:hover {
-  background: linear-gradient(45deg, #ee5a52, #ff6b6b);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Navigasyon Butonları */
 .slider .slider-buttons {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 40px;
+  /* Aşağıya alındı */
+  right: 40px;
+  /* Sağa alındı */
+  width: auto;
+  height: auto;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
+  gap: 10px;
+  /* Butonlar arası boşluk */
   z-index: 3;
+  padding: 0;
 }
 
 .slider-buttons button {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  opacity: 0.7;
-  transition: 0.3s ease all;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  opacity: 0.8;
+  transition: all 0.3s ease;
   color: white;
 }
 
 .slider-buttons button:hover {
-  background-color: #ff6b6b;
+  background-color: #ee403d;
   opacity: 1;
-  color: #fff;
-  border-color: #ff6b6b;
-  transform: scale(1.1);
+  border-color: #ee403d;
+  transform: scale(1.05);
 }
 
 .slider-buttons button i {
-  font-size: 24px;
+  font-size: 1.2rem;
 }
 
+/* Nokta Navigasyonu */
 .slider .slider-dots {
   position: absolute;
-  bottom: 30px;
-  width: 100%;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  column-gap: 10px;
+  column-gap: 12px;
   z-index: 3;
 }
 
 .slider .slider-dots .slider-dot {
+  padding: 5px;
   border: none;
   display: flex;
-  opacity: 0.5;
-  transition: 0.3s ease all;
+  opacity: 0.6;
+  transition: all 0.3s ease;
   background: transparent;
 }
 
 .slider .slider-dots .slider-dot:hover {
   opacity: 1;
-  transform: scale(1.2);
 }
 
 .slider .slider-dots .slider-dot span {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  background-color: rgba(255, 255, 255, 0.6);
+  width: 12px;
+  height: 12px;
+  background-color: transparent;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #fff;
   transition: all 0.3s ease;
 }
 
 .slider .slider-dots .slider-dot.active span {
-  background-color: #ff6b6b;
-  border-color: #ff6b6b;
-  box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+  background-color: #ee403d;
+  border-color: #ee403d;
+  transform: scale(1.2);
 }
 
 .slider .slider-dots .slider-dot.active {
   opacity: 1;
 }
 
+/* Animasyon */
 .fade {
-  animation-name: fadeInUp;
-  animation-duration: 1s;
+  animation-name: fadeInCustom;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
   animation-fill-mode: both;
 }
 
-@keyframes fadeInUp {
+@keyframes fadeInCustom {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateX(-50px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Tasarım */
+@media (max-width: 992px) {
+  .slider-title {
+    font-size: 2.8rem;
   }
 }
 
 @media (max-width: 768px) {
   .slider-item {
-    height: calc(100vh - 155px);
+    height: 80vh;
+    /* Mobil için yükseklik ayarı */
   }
 
-  .slider-buttons {
+  .slider .slider-buttons {
     display: none !important;
   }
 
@@ -205,14 +250,14 @@
   }
 
   .slider-title {
-    font-size: 32px;
+    font-size: 2.2rem;
   }
 
   .slider-description {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .slider-subtitle {
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 }

@@ -23,21 +23,32 @@ import UpdateBlogPage from "./pages/Admin/Blogs/UpdateBlogPage";
 import CategoryPage from "./pages/Admin/Categories/CategoryPage";
 import CreateCategoryPage from "./pages/Admin/Categories/CreateCategoryPage";
 import UpdateCategoryPage from "./pages/Admin/Categories/UpdateCategoryPage";
-import CouponPage from "./pages/Admin/Coupons/CouponPage";
-import CreateCouponPage from "./pages/Admin/Coupons/CreateCouponPage";
-import UpdateCouponPage from "./pages/Admin/Coupons/UpdateCouponPage";
+
+import DynamicPage from "./components/DynamicPage/DynamicPage";
 import DashboardPage from "./pages/Admin/DashboardPage";
 import CreateFeaturePage from "./pages/Admin/Features/CreateFeaturePage";
 import FeaturePage from "./pages/Admin/Features/FeaturePage";
 import UpdateFeaturePage from "./pages/Admin/Features/UpdateFeaturePage";
 import OrderPage from "./pages/Admin/OrderPage";
+import CreatePagePage from "./pages/Admin/Pages/CreatePagePage";
+import PagePage from "./pages/Admin/Pages/PagePage";
+import UpdatePagePage from "./pages/Admin/Pages/UpdatePagePage";
 import CreateProductPage from "./pages/Admin/Products/CreateProductPage";
 import ProductPage from "./pages/Admin/Products/ProductPage";
 import UpdateProductPage from "./pages/Admin/Products/UpdateProductPage";
+import CreateProgramPage from "./pages/Admin/Programs/CreateProgramPage";
+import ProgramPage from "./pages/Admin/Programs/ProgramPage";
+import UpdateProgramPage from "./pages/Admin/Programs/UpdateProgramPage";
+import CreateReferencePage from "./pages/Admin/References/CreateReferencePage";
+import ReferencePage from "./pages/Admin/References/ReferencePage";
+import UpdateReferencePage from "./pages/Admin/References/UpdateReferencePage";
+import HomepageSettingsPage from "./pages/Admin/Settings/HomepageSettingsPage";
 import CreateSliderPage from "./pages/Admin/Sliders/CreateSliderPage";
 import SliderPage from "./pages/Admin/Sliders/SliderPage";
 import UpdateSliderPage from "./pages/Admin/Sliders/UpdateSliderPage";
 import UserPage from "./pages/Admin/UserPage";
+import CreateUserPage from "./pages/Admin/Users/CreateUserPage";
+import UpdateUserPage from "./pages/Admin/Users/UpdateUserPage";
 import Success from "./pages/Success";
 
 function App() {
@@ -49,6 +60,11 @@ function App() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/auth" element={<AuthPage />} />
+
+      {/* Dinamik Kurumsal Sayfalar */}
+      <Route path="/page/:slug" element={<DynamicPage />} />
+
+      {/* Statik Sayfalar (Geçici - Sonra kaldırılabilir) */}
       <Route path="/about" element={<AboutPage />} />
       <Route path="/mission-vision" element={<MissionVisionPage />} />
       <Route path="/history" element={<HistoryPage />} />
@@ -56,6 +72,7 @@ function App() {
       <Route path="/facilities" element={<FacilitiesPage />} />
       <Route path="/services" element={<ServicesPage />} />
       <Route path="/careers" element={<CareersPage />} />
+
       <Route path="/product/:id" element={<ProductDetailsPage />} />
       <Route path="/blog/:slug" element={<BlogDetailsPage />} />
       <Route path="/success" element={<Success />} />
@@ -63,6 +80,8 @@ function App() {
       <Route path="/admin/*">
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="users" element={<UserPage />} />
+        <Route path="users/create" element={<CreateUserPage />} />
+        <Route path="users/update/:userId" element={<UpdateUserPage />} />
         <Route path="categories" element={<CategoryPage />} />
         <Route path="categories/create" element={<CreateCategoryPage />} />
         <Route path="categories/update/:id" element={<UpdateCategoryPage />} />
@@ -78,9 +97,16 @@ function App() {
         <Route path="products" element={<ProductPage />} />
         <Route path="products/create" element={<CreateProductPage />} />
         <Route path="products/update/:id" element={<UpdateProductPage />} />
-        <Route path="coupons" element={<CouponPage />} />
-        <Route path="coupons/create" element={<CreateCouponPage />} />
-        <Route path="coupons/update/:id" element={<UpdateCouponPage />} />
+        <Route path="programs" element={<ProgramPage />} />
+        <Route path="programs/create" element={<CreateProgramPage />} />
+        <Route path="programs/update/:programId" element={<UpdateProgramPage />} />
+        <Route path="references" element={<ReferencePage />} />
+        <Route path="references/create" element={<CreateReferencePage />} />
+        <Route path="references/update/:referenceId" element={<UpdateReferencePage />} />
+        <Route path="pages" element={<PagePage />} />
+        <Route path="pages/create" element={<CreatePagePage />} />
+        <Route path="pages/update/:id" element={<UpdatePagePage />} />
+        <Route path="settings/homepage" element={<HomepageSettingsPage />} />
         <Route path="orders" element={<OrderPage />} />
       </Route>
     </Routes>

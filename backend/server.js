@@ -5,7 +5,11 @@ const app = express();
 const cors = require("cors");
 const logger = require("morgan");
 const mainRoute = require("./routes/index.js");
-const port = 5000;
+const port = process.env.PORT || 5000;
+
+// Seed functions
+const seedSettings = require("./seeds/settingsSeeds.js");
+const seedPages = require("./seeds/pageSeeds.js");
 
 dotenv.config();
 
@@ -27,5 +31,7 @@ app.use("/api", mainRoute);
 
 app.listen(port, () => {
   connect();
+  seedSettings();
+  seedPages();
   console.log(`Sunucu ${port} portunda çalışıyor.`);
 });

@@ -1,15 +1,17 @@
 import {
   AppstoreOutlined,
-  BarcodeOutlined,
   BookOutlined,
   DashboardOutlined,
+  FileTextOutlined,
   LaptopOutlined,
   LogoutOutlined,
   MenuOutlined,
   PictureOutlined,
   RollbackOutlined,
+  SettingOutlined,
   ShoppingCartOutlined,
   StarOutlined,
+  TeamOutlined,
   UserOutlined
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
@@ -42,11 +44,13 @@ const AdminLayout = ({ children }) => {
       icon: <DashboardOutlined />,
       label: "Dashboard",
       path: "/admin/dashboard",
+      roles: ["admin", "moderator"],
     },
     {
       key: "categories",
       icon: <AppstoreOutlined />,
       label: "Kategoriler",
+      roles: ["admin"],
       children: [
         {
           key: "categories-list",
@@ -64,6 +68,7 @@ const AdminLayout = ({ children }) => {
       key: "blogs",
       icon: <BookOutlined />,
       label: "Blog Yazıları",
+      roles: ["admin", "moderator"],
       children: [
         {
           key: "blogs-list",
@@ -81,6 +86,7 @@ const AdminLayout = ({ children }) => {
       key: "features",
       icon: <StarOutlined />,
       label: "Özellikler",
+      roles: ["admin"],
       children: [
         {
           key: "features-list",
@@ -98,6 +104,7 @@ const AdminLayout = ({ children }) => {
       key: "sliders",
       icon: <PictureOutlined />,
       label: "Sliderlar",
+      roles: ["admin"],
       children: [
         {
           key: "sliders-list",
@@ -115,6 +122,7 @@ const AdminLayout = ({ children }) => {
       key: "products",
       icon: <LaptopOutlined />,
       label: "Ürünler",
+      roles: ["admin"],
       children: [
         {
           key: "products-list",
@@ -129,19 +137,56 @@ const AdminLayout = ({ children }) => {
       ],
     },
     {
-      key: "coupons",
-      icon: <BarcodeOutlined />,
-      label: "Kuponlar",
+      key: "programs",
+      icon: <LaptopOutlined />,
+      label: "Program Bilgileri",
+      roles: ["admin"],
       children: [
         {
-          key: "coupons-list",
-          label: "Kupon Listesi",
-          path: "/admin/coupons",
+          key: "programs-list",
+          label: "Program Listesi",
+          path: "/admin/programs",
         },
         {
-          key: "coupons-create",
-          label: "Yeni Kupon",
-          path: "/admin/coupons/create",
+          key: "programs-create",
+          label: "Yeni Program",
+          path: "/admin/programs/create",
+        },
+      ],
+    },
+    {
+      key: "references",
+      icon: <TeamOutlined />,
+      label: "Referanslar",
+      roles: ["admin"],
+      children: [
+        {
+          key: "references-list",
+          label: "Referans Listesi",
+          path: "/admin/references",
+        },
+        {
+          key: "references-create",
+          label: "Yeni Referans",
+          path: "/admin/references/create",
+        },
+      ],
+    },
+    {
+      key: "pages",
+      icon: <FileTextOutlined />,
+      label: "Sayfalar",
+      roles: ["admin"],
+      children: [
+        {
+          key: "pages-list",
+          label: "Sayfa Listesi",
+          path: "/admin/pages",
+        },
+        {
+          key: "pages-create",
+          label: "Yeni Sayfa",
+          path: "/admin/pages/create",
         },
       ],
     },
@@ -149,19 +194,49 @@ const AdminLayout = ({ children }) => {
       key: "users",
       icon: <UserOutlined />,
       label: "Kullanıcılar",
-      path: "/admin/users",
+      roles: ["admin"],
+      children: [
+        {
+          key: "users-list",
+          label: "Kullanıcı Listesi",
+          path: "/admin/users",
+        },
+        {
+          key: "users-create",
+          label: "Yeni Kullanıcı",
+          path: "/admin/users/create",
+        },
+      ],
     },
     {
       key: "orders",
       icon: <ShoppingCartOutlined />,
       label: "Siparişler",
       path: "/admin/orders",
+      roles: ["admin"],
+    },
+    {
+      key: "settings",
+      icon: <SettingOutlined />,
+      label: "Ayarlar",
+      roles: ["admin"],
+      children: [
+        {
+          key: "settings-homepage",
+          label: "Anasayfa Ayarları",
+          path: "/admin/settings/homepage",
+        },
+      ],
     },
   ];
 
+  const filteredMenuItems = menuItems.filter(item =>
+    !item.roles || item.roles.includes(userRole)
+  );
+
   const getActiveKey = () => {
     const currentPath = location.pathname;
-    for (const item of menuItems) {
+    for (const item of filteredMenuItems) {
       if (item.children) {
         for (const child of item.children) {
           if (child.path === currentPath) {
@@ -179,7 +254,7 @@ const AdminLayout = ({ children }) => {
 
   const getPageTitle = () => {
     const currentPath = location.pathname;
-    for (const item of menuItems) {
+    for (const item of filteredMenuItems) {
       if (item.children) {
         for (const child of item.children) {
           if (child.path === currentPath) {
@@ -231,7 +306,7 @@ const AdminLayout = ({ children }) => {
   useEffect(() => {
     // Active submenu'yu otomatik aç
     const currentPath = location.pathname;
-    for (const item of menuItems) {
+    for (const item of filteredMenuItems) {
       if (item.children) {
         for (const child of item.children) {
           if (child.path === currentPath) {
@@ -277,7 +352,7 @@ const AdminLayout = ({ children }) => {
 
         {/* Menu */}
         <nav className="admin-nav">
-          {menuItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <div key={item.key} className="menu-item-container">
               {item.children ? (
                 <div>

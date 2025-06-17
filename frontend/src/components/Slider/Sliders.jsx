@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SliderItem from "./SliderItem";
 import "./Sliders.css";
 
@@ -6,6 +6,7 @@ const Sliders = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slidesData, setSlidesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const intervalRef = useRef(null); // Interval'ı saklamak için ref
   const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   // Fallback data - eğer API'den veri gelmezse
@@ -75,6 +76,28 @@ const Sliders = () => {
     setCurrentSlide((prevSlide) => (prevSlide - 1 + slidesData.length) % slidesData.length);
   };
 
+  // Otomatik geçişi başlatan fonksiyon
+  const startSlider = () => {
+    stopSlider(); // Önceki interval'ı temizle
+    intervalRef.current = setInterval(() => {
+      nextSlide();
+    }, 5000);
+  };
+
+  // Otomatik geçişi durduran fonksiyon
+  const stopSlider = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (slidesData.length > 1) {
+      startSlider();
+    }
+    return () => stopSlider(); // Component unmount olduğunda temizle
+  }, [slidesData.length]);
+
   if (loading) {
     return (
       <section className="slider">
@@ -90,7 +113,11 @@ const Sliders = () => {
   }
 
   return (
-    <section className="slider">
+    <section
+      className="slider"
+      onMouseEnter={stopSlider}
+      onMouseLeave={startSlider}
+    >
       <div className="slider-elements">
         {slidesData.map((slide, index) => (
           index === currentSlide && (

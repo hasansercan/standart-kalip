@@ -33,13 +33,13 @@ const AdminLoginPage = () => {
             if (response.ok) {
                 const data = await response.json();
 
-                if (data.role === "admin") {
+                if (data.role === "admin" || data.role === "moderator") {
                     localStorage.setItem("user", JSON.stringify(data));
-                    message.success("Admin girişi başarılı.");
+                    message.success(data.role === "admin" ? "Admin girişi başarılı." : "Moderatör girişi başarılı.");
                     // Admin paneline yönlendir
                     navigate("/admin/dashboard");
                 } else {
-                    message.error("Bu alan sadece yöneticiler için!");
+                    message.error("Bu alan sadece yöneticiler ve moderatörler için!");
                 }
             } else {
                 message.error("Giriş başarısız. Bilgilerinizi kontrol edin.");
