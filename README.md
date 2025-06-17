@@ -1,6 +1,121 @@
 # Standart Kalıp E-Commerce Platform
 
-Modern, full-stack e-commerce platformu. React frontend ve Node.js backend ile geliştirilmiştir.
+Modern ve responsive e-ticaret platformu - Kalıp endüstrisi için özel tasarlanmış.
+
+## 🚀 Netlify Deployment
+
+Bu proje Netlify'de serverless functions ile deploy edilmeye hazırdır.
+
+### Otomatik Deployment
+
+1. **GitHub Repository'yi Netlify'e bağlayın**
+2. **Build Settings:**
+   - Build command: `npm ci && npm run build`
+   - Publish directory: `frontend/dist`
+   - Functions directory: `netlify/functions`
+
+### Environment Variables
+
+Netlify dashboard'da şu environment variables'ları ekleyin:
+
+```bash
+# Backend Database
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/standart-kalip
+
+# Environment
+NODE_ENV=production
+
+# Frontend URL (Netlify'den alınan URL)
+FRONTEND_URL=https://your-site-name.netlify.app
+
+# Stripe (opsiyonel)
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+
+# Netlify otomatik ayarlar
+VITE_API_BASE_URL=/.netlify/functions/api
+NETLIFY=true
+```
+
+### 📋 Deployment Checklist
+
+- [x] ✅ Netlify.toml konfigürasyonu
+- [x] ✅ Serverless functions optimizasyonu
+- [x] ✅ CORS ayarları
+- [x] ✅ Build optimizasyonu
+- [x] ✅ Security headers
+- [x] ✅ Environment variables template
+
+### 🔧 Local Development
+
+```bash
+# Tüm dependencies'leri yükle
+npm run install:all
+
+# Development mode (frontend + backend)
+npm run dev
+
+# Sadece frontend
+npm run frontend
+
+# Sadece backend
+npm run backend
+```
+
+### 📁 Project Structure
+
+```
+standart-kalip/
+├── frontend/           # React + Vite frontend
+├── backend/           # Express.js API
+├── netlify/
+│   └── functions/     # Serverless functions
+├── netlify.toml       # Netlify configuration
+└── package.json       # Root package.json
+```
+
+### 🌐 API Endpoints
+
+Production'da API endpoints:
+- Base URL: `https://your-site-name.netlify.app/.netlify/functions/api`
+- Health Check: `/.netlify/functions/api/health`
+- Categories: `/.netlify/functions/api/categories`
+- Products: `/.netlify/functions/api/products`
+- Blogs: `/.netlify/functions/api/blogs`
+
+### 🛠️ Technologies
+
+**Frontend:**
+- React 18
+- Vite
+- Ant Design
+- React Router DOM
+- Framer Motion
+
+**Backend:**
+- Node.js + Express
+- MongoDB + Mongoose
+- Netlify Functions
+- Serverless HTTP
+
+### 📱 Features
+
+- 📊 Admin Panel
+- 🛒 Shopping Cart
+- 📝 Blog System
+- 📁 Category Management
+- 🔍 Product Search
+- 📞 Contact Forms
+- 📱 Responsive Design
+- 🔒 Authentication
+- 💳 Stripe Integration
+
+### 🚀 Quick Deploy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/standart-kalip)
+
+### 📞 Support
+
+Teknik destek için: [info@standartkalip.com](mailto:info@standartkalip.com)
 
 ## 🚀 Proje Yapısı
 

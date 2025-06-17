@@ -16,9 +16,9 @@ dotenv.config();
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    if (process.env.NODE_ENV !== 'production') {
-    }
+    console.log("Connected to mongoDB");
   } catch (error) {
+    console.error("MongoDB connection error:", error);
     throw error;
   }
 };
@@ -49,18 +49,34 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:5173',
     'https://standart-kalip.netlify.app',
-    process.env.FRONTEND_URL
+    process.env.FRONTEND_URL,
+    /\.netlify\.app$/,
+    /\.netlify\.live$/
   ].filter(Boolean),
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Standart Kalıp API Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.use("/api", mainRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Server is running' });
+  res.status(200).json({
+    status: 'OK',
+    message: 'API is healthy',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // Initialize database and seeds only once
@@ -68,24 +84,28 @@ let isInitialized = false;
 
 const initialize = async () => {
   if (!isInitialized) {
-    await connect();
-    await seedSettings();
-    await seedPages();
-    isInitialized = true;
-    if (process.env.NODE_ENV !== 'production') {
+    try {
+      await connect();
+      await seedSettings();
+      await seedPages();
+      isInitialized = true;
+      console.log("Database initialized successfully");
+    } catch (error) {
+      console.error("Initialization error:", error);
+      throw error;
     }
   }
 };
 
-// For Vercel serverless functions
-if (process.env.NODE_ENV === 'production') {
-  initialize();
+// Netlify functions için export
+if (process.env.NODE_ENV === 'production' || process.env.NETLIFY) {
+  // Netlify functions environment
+  initialize().catch(console.error);
   module.exports = app;
 } else {
-  // For local development
+  // Local development
   app.listen(port, async () => {
     await initialize();
-    if (process.env.NODE_ENV !== 'production') {
-    }
+    console.log(`Server is running on http://localhost:${port}`);
   });
 }
