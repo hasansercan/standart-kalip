@@ -2,9 +2,21 @@ const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
 
-// Vercel için memory storage kullanıyoruz (file system read-only)
-// Production'da Cloudinary, AWS S3 veya benzeri cloud storage kullanılmalı
-const memoryStorage = multer.memoryStorage();
+// Cloudinary yapılandırması (sadece production'da kullanılacak)
+let cloudinary = null;
+if (process.env.NODE_ENV === 'production' && process.env.CLOUDINARY_URL) {
+    try {
+        cloudinary = require('cloudinary').v2;
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        });
+        console.log('Cloudinary configured for production');
+    } catch (error) {
+        console.warn('Cloudinary configuration failed:', error.message);
+    }
+}
 
 // Geliştirme ortamı için disk storage
 const createDiskStorage = (folder) => {
@@ -21,14 +33,12 @@ const createDiskStorage = (folder) => {
     });
 };
 
-// Storage seçimi - production'da memory, development'ta disk
-const getStorage = (folder) => {
-    return process.env.NODE_ENV === 'production' ? memoryStorage : createDiskStorage(folder);
-};
+// Memory storage for Cloudinary (production)
+const memoryStorage = multer.memoryStorage();
 
-const sliderStorage = getStorage('slider');
-const categoryStorage = getStorage('categories');
-const blogStorage = getStorage('blogs');
+const sliderStorage = createDiskStorage('slider');
+const categoryStorage = createDiskStorage('categories');
+const blogStorage = createDiskStorage('blogs');
 
 // Dosya filtresi - sadece resim dosyaları
 const fileFilter = (req, file, cb) => {
@@ -43,9 +53,23 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+// Ortama göre storage seçimi
+const getStorage = (folderType) => {
+    if (process.env.NODE_ENV === 'production' && cloudinary) {
+        return memoryStorage;
+    }
+
+    switch (folderType) {
+        case 'slider': return sliderStorage;
+        case 'categories': return categoryStorage;
+        case 'blogs': return blogStorage;
+        default: return sliderStorage;
+    }
+};
+
 // Slider multer yapılandırması
 const sliderUpload = multer({
-    storage: sliderStorage,
+    storage: getStorage('slider'),
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB limit
     },
@@ -54,7 +78,7 @@ const sliderUpload = multer({
 
 // Kategori multer yapılandırması
 const categoryUpload = multer({
-    storage: categoryStorage,
+    storage: getStorage('categories'),
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB limit
     },
@@ -63,15 +87,40 @@ const categoryUpload = multer({
 
 // Blog multer yapılandırması
 const blogUpload = multer({
-    storage: blogStorage,
+    storage: getStorage('blogs'),
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB limit
     },
     fileFilter: fileFilter
 });
 
+// Cloudinary'ye dosya yükleme fonksiyonu
+const uploadToCloudinary = (buffer, folder, filename) => {
+    return new Promise((resolve, reject) => {
+        const uploadOptions = {
+            folder: `standart-kalip/${folder}`,
+            public_id: filename.split('.')[0], // Extension olmadan
+            resource_type: 'auto',
+            overwrite: true
+        };
+
+        cloudinary.uploader.upload_stream(
+            uploadOptions,
+            (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            }
+        ).end(buffer);
+    });
+};
+
 module.exports = {
     sliderUpload,
     categoryUpload,
-    blogUpload
+    blogUpload,
+    uploadToCloudinary,
+    cloudinary: cloudinary
 };

@@ -5,6 +5,12 @@
 [build.environment]
   NODE_VERSION = "18"
   VITE_API_BASE_URL = "https://standart-kalip.netlify.app/.netlify/functions/api"
+  NODE_ENV = "production"
+  # Cloudinary yapılandırması (Netlify dashboard'dan ayarlanacak)
+  # CLOUDINARY_CLOUD_NAME = "your-cloud-name"
+  # CLOUDINARY_API_KEY = "your-api-key"
+  # CLOUDINARY_API_SECRET = "your-api-secret"
+  # CLOUDINARY_URL = "cloudinary://api_key:api_secret@cloud_name"
 
 [[redirects]]
   from = "/api/*"

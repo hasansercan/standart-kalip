@@ -264,3 +264,103 @@ ISC License
 ## 👥 Geliştirici
 
 **Standart Kalıp**
+
+## 🖼️ Resim Yükleme Sistemi
+
+Proje **akıllı resim yükleme** sistemi ile donatılmıştır:
+
+### Development (Local)
+- Resimler `frontend/public/img/` klasörüne kaydedilir
+- Disk storage kullanılır
+- Anında görsel önizleme
+
+### Production (Netlify)
+- Resimler **Cloudinary**'ye yüklenir
+- CDN desteği ile hızlı yükleme
+- Otomatik resim optimizasyonu
+- Kalıcı depolama
+
+### Kullanım
+1. **Development'ta**: Hiçbir şey yapmayın, otomatik local storage
+2. **Production'da**: Sadece Cloudinary ayarlarını yapın
+
+## 🌐 Cloudinary Kurulumu (Production İçin)
+
+### 1. Cloudinary Hesabı Oluşturun
+- [cloudinary.com](https://cloudinary.com) adresinden ücretsiz hesap açın
+- Dashboard'dan bilgilerinizi kopyalayın
+
+### 2. Netlify Environment Variables
+Netlify Dashboard → Site Settings → Environment Variables'a ekleyin:
+
+```bash
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+NODE_ENV=production
+```
+
+### 3. Deploy Edin
+```bash
+git add .
+git commit -m "Add Cloudinary support"
+git push origin main
+```
+
+### ✨ Sonuç
+- **Local'de geliştirirken**: Resimler disk'e kaydedilir
+- **Netlify'da çalışırken**: Resimler Cloudinary'ye yüklenir
+- **Mevcut kod değişmez**: Aynı admin paneli, aynı kullanım!
+
+## 📁 Desteklenen Resim Türleri
+- JPG, JPEG, PNG, GIF, WEBP
+- Maksimum dosya boyutu: 5MB
+- Otomatik dosya adı oluşturma
+
+## 🔄 Nasıl Çalışır?
+
+### Frontend (Akıllı Endpoint Seçimi)
+```javascript
+const getUploadEndpoint = () => {
+    if (import.meta.env.PROD || apiUrl.includes('netlify')) {
+        return '/api/sliders/upload-cloud'; // Cloudinary
+    }
+    return '/api/sliders/upload'; // Local
+};
+```
+
+### Backend (Otomatik Storage Seçimi)
+```javascript
+const getStorage = (folderType) => {
+    if (process.env.NODE_ENV === 'production' && cloudinary) {
+        return memoryStorage; // Cloudinary için
+    }
+    return diskStorage; // Local için
+};
+```
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+npm install
+npm run dev
+```
+
+### Netlify Production
+1. Repository'yi Netlify'a bağlayın
+2. Environment variables'ları ekleyin
+3. Deploy edin
+
+**Hiçbir ek konfigürasyon gerekmez!** 🎉
+
+## 📞 Destek
+
+Resim yükleme ile ilgili sorunlar için:
+1. Environment variables'ları kontrol edin
+2. Cloudinary dashboard'da quota kontrolü yapın
+3. Browser console'da hata mesajlarını inceleyin
+
+---
+
+**Not**: Bu sistem tamamen backward-compatible'dır. Mevcut resimleriniz çalışmaya devam edecektir.

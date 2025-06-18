@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Slider = require("../models/Slider.js");
-const { sliderUpload } = require("../middleware/upload.js");
+const { sliderUpload, uploadToCloudinary, cloudinary } = require("../middleware/upload.js");
 
 // Tüm sliderları getir (sıralı olarak)
 router.get("/", async (req, res) => {
@@ -110,14 +110,14 @@ router.delete("/:sliderId", async (req, res) => {
     }
 });
 
-// Dosya yükleme endpoint'i
+// Dosya yükleme endpoint'i (Mevcut - Local dosya sistemi için)
 router.post("/upload", sliderUpload.single('image'), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: "Dosya yüklenmedi" });
         }
 
-        // Dosya yolu frontend'e göre ayarla
+        // Local dosya yolu
         const imagePath = `/img/slider/${req.file.filename}`;
 
         res.status(200).json({
@@ -126,7 +126,51 @@ router.post("/upload", sliderUpload.single('image'), (req, res) => {
             filename: req.file.filename
         });
     } catch (error) {
-        res.status(500).json({ error: "Dosya yükleme hatası" });
+        console.error('Upload error:', error);
+        res.status(500).json({ error: "Dosya yükleme hatası: " + error.message });
+    }
+});
+
+// YENİ: Cloudinary upload endpoint'i (Production/Netlify için)
+router.post("/upload-cloud", sliderUpload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "Dosya yüklenmedi" });
+        }
+
+        // Production'da Cloudinary kullan
+        if (process.env.NODE_ENV === 'production' && cloudinary) {
+            try {
+                const result = await uploadToCloudinary(
+                    req.file.buffer,
+                    'slider',
+                    req.file.originalname
+                );
+
+                res.status(200).json({
+                    message: "Dosya başarıyla Cloudinary'ye yüklendi",
+                    imagePath: result.secure_url,
+                    cloudinaryId: result.public_id,
+                    filename: result.public_id
+                });
+            } catch (cloudinaryError) {
+                console.error('Cloudinary upload error:', cloudinaryError);
+                res.status(500).json({
+                    error: "Cloudinary yükleme hatası: " + cloudinaryError.message
+                });
+            }
+        } else {
+            // Development'ta local storage kullan
+            const imagePath = `/img/slider/${req.file.filename}`;
+            res.status(200).json({
+                message: "Dosya başarıyla yüklendi (local)",
+                imagePath: imagePath,
+                filename: req.file.filename
+            });
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: "Dosya yükleme hatası: " + error.message });
     }
 });
 

@@ -10,7 +10,7 @@ router.post("/upload", blogUpload.single("image"), (req, res) => {
             return res.status(400).json({ error: "Resim dosyası yüklenmedi." });
         }
 
-        // Frontend'te kullanılacak resim yolu
+        // Local dosya yolu
         const imagePath = `/img/blogs/${req.file.filename}`;
 
         res.status(200).json({
@@ -19,7 +19,8 @@ router.post("/upload", blogUpload.single("image"), (req, res) => {
             fileName: req.file.filename
         });
     } catch (error) {
-        res.status(500).json({ error: "Resim yükleme sırasında hata oluştu." });
+        console.error('Blog upload error:', error);
+        res.status(500).json({ error: "Resim yükleme sırasında hata oluştu: " + error.message });
     }
 });
 

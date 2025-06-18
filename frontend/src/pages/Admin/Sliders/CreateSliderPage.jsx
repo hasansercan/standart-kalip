@@ -14,6 +14,16 @@ const CreateSliderPage = () => {
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
+    // Ortama göre upload endpoint'i seç
+    const getUploadEndpoint = () => {
+        // Production'da (Netlify) cloudinary kullan
+        if (import.meta.env.PROD || apiUrl.includes('netlify')) {
+            return `${apiUrl}/api/sliders/upload-cloud`;
+        }
+        // Development'ta local storage kullan
+        return `${apiUrl}/api/sliders/upload`;
+    };
+
     const onFinish = async (values) => {
         setLoading(true);
         try {
@@ -55,31 +65,45 @@ const CreateSliderPage = () => {
         navigate("/admin/sliders");
     };
 
-    // Dosya yükleme özelliği
+    // Dosya yükleme özelliği - Akıllı endpoint seçimi
     const uploadProps = {
         name: 'image',
         multiple: false,
-        action: `${apiUrl}/api/sliders/upload`,
+        action: getUploadEndpoint(),
         accept: '.jpg,.jpeg,.png,.gif,.webp',
         onChange(info) {
             const { status } = info.file;
-            if (status === 'done') {
-                message.success(`${info.file.name} dosyası başarıyla yüklendi.`);
+            if (status === 'uploading') {
+                message.loading('Dosya yükleniyor...', 0);
+            } else if (status === 'done') {
+                message.destroy(); // Loading mesajını kaldır
+                const uploadType = info.file.response.cloudinaryId ? 'Cloudinary' : 'local';
+                message.success(`${info.file.name} dosyası başarıyla yüklendi (${uploadType}).`);
+
                 const imagePath = info.file.response.imagePath;
                 setUploadedImagePath(imagePath);
                 setImagePreview(imagePath);
                 // Form'da image field'ını güncelle
                 form.setFieldsValue({ image: imagePath });
             } else if (status === 'error') {
+                message.destroy(); // Loading mesajını kaldır
                 message.error(`${info.file.name} dosya yükleme başarısız.`);
             }
         },
+        onRemove() {
+            setUploadedImagePath(null);
+            setImagePreview(null);
+            form.setFieldsValue({ image: null });
+        }
     };
 
     return (
         <div style={{ padding: "20px" }}>
             <div style={{ marginBottom: "20px" }}>
                 <h2>Yeni Slider Oluştur</h2>
+                <p style={{ color: '#666', fontSize: '14px' }}>
+                    🔄 Akıllı Upload: {import.meta.env.PROD || apiUrl.includes('netlify') ? 'Cloudinary (Production)' : 'Local Storage (Development)'}
+                </p>
             </div>
 
             <Form
@@ -137,6 +161,13 @@ const CreateSliderPage = () => {
                             <p className="ant-upload-text">Dosyayı sürükleyip bırakın veya tıklayarak seçin</p>
                             <p className="ant-upload-hint">
                                 Sadece JPG, JPEG, PNG, GIF, WEBP formatları desteklenir. Maksimum 5MB.
+                                <br />
+                                <strong>
+                                    {import.meta.env.PROD || apiUrl.includes('netlify')
+                                        ? '☁️ Cloudinary\'ye yüklenecek (Production)'
+                                        : '💻 Local storage\'a kaydedilecek (Development)'
+                                    }
+                                </strong>
                             </p>
                         </Dragger>
 

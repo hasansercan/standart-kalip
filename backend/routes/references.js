@@ -112,7 +112,7 @@ router.post("/upload", categoryUpload.single('image'), (req, res) => {
             return res.status(400).json({ error: "Dosya yüklenmedi" });
         }
 
-        // Dosya yolu frontend'e göre ayarla
+        // Local dosya yolu
         const imagePath = `/img/brands/${req.file.filename}`;
 
         res.status(200).json({
@@ -121,7 +121,8 @@ router.post("/upload", categoryUpload.single('image'), (req, res) => {
             filename: req.file.filename
         });
     } catch (error) {
-        res.status(500).json({ error: "Dosya yükleme hatası" });
+        console.error('Reference upload error:', error);
+        res.status(500).json({ error: "Dosya yükleme hatası: " + error.message });
     }
 });
 
