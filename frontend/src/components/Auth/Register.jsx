@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { message } from "antd";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../../config/apiConfig";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,6 @@ const Register = () => {
     password: "",
   });
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +19,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/api/auth/register`, {
+      const response = await fetch(buildApiUrl('/auth/register'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const Register = () => {
       if (response.ok) {
         const data = await response.json();
         // const { password, ...rest } = data;
-        
+
         localStorage.setItem("user", JSON.stringify(data));
         message.success("Kayıt başarılı.");
         navigate("/");
@@ -38,7 +38,7 @@ const Register = () => {
         message.error("Kayıt başarısız.");
       }
     } catch (error) {
-      }
+    }
   };
 
   return (

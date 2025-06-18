@@ -10,7 +10,6 @@ const AdminLoginPage = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -22,7 +21,7 @@ const AdminLoginPage = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`${apiUrl}/auth/login`, {
+            const response = await fetch(buildApiUrl('/auth/login'), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
