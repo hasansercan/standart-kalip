@@ -16,12 +16,14 @@ const CreateSliderPage = () => {
 
     // Ortama göre upload endpoint'i seç
     const getUploadEndpoint = () => {
-        // Production'da (Netlify) cloudinary kullan
-        if (import.meta.env.PROD || apiUrl.includes('netlify')) {
-            return `${apiUrl}/api/sliders/upload-cloud`;
-        }
-        // Development'ta local storage kullan
+        // Geçici: Cloudinary ayarlanana kadar normal upload kullan
         return `${apiUrl}/api/sliders/upload`;
+
+        // Cloudinary hazır olduğunda bu kısmı uncomment edin:
+        // if (import.meta.env.PROD || apiUrl.includes('netlify')) {
+        //     return `${apiUrl}/api/sliders/upload-cloud`;
+        // }
+        // return `${apiUrl}/api/sliders/upload`;
     };
 
     const onFinish = async (values) => {
