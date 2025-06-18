@@ -13,16 +13,24 @@ const handler = serverless(app, {
         }
 
         console.log('Original URL:', request.url);
-        console.log('Event path:', event.path);
 
-        // Netlify redirect ile gelen URL'i düzelt
-        // /api/settings -> event.path'ten alınacak
-        if (event.path) {
-            request.url = '/api' + event.path;
-        } else if (!request.url.startsWith('/api')) {
-            request.url = '/api' + request.url;
+        // URL'i temizle - /.netlify/functions/api kısmını kaldır
+        let cleanUrl = request.url;
+        if (cleanUrl.startsWith('/.netlify/functions/api')) {
+            cleanUrl = cleanUrl.replace('/.netlify/functions/api', '');
         }
 
+        // Eğer boşsa health check
+        if (!cleanUrl || cleanUrl === '/') {
+            cleanUrl = '/api/health';
+        }
+
+        // Eğer /api ile başlamıyorsa ve /api içermiyorsa ekle
+        if (!cleanUrl.startsWith('/api') && !cleanUrl.includes('/api/')) {
+            cleanUrl = '/api' + cleanUrl;
+        }
+
+        request.url = cleanUrl;
         console.log('Final URL:', request.url);
     }
 });
@@ -31,16 +39,9 @@ module.exports.handler = async (event, context) => {
     // Netlify context'i ayarla
     context.callbackWaitsForEmptyEventLoop = false;
 
-    console.log('Event details:', {
-        path: event.path,
-        httpMethod: event.httpMethod,
-        headers: event.headers
-    });
-
     console.log('Environment check:', {
         NODE_ENV: process.env.NODE_ENV,
-        MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
-        NETLIFY: process.env.NETLIFY
+        MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET'
     });
 
     try {
@@ -62,15 +63,13 @@ module.exports.handler = async (event, context) => {
         };
     } catch (error) {
         console.error('Netlify function error:', error);
-        console.error('Error stack:', error.stack);
 
         return {
             statusCode: 500,
             body: JSON.stringify({
                 error: 'Internal server error',
                 message: error.message,
-                timestamp: new Date().toISOString(),
-                path: event.path
+                timestamp: new Date().toISOString()
             }),
             headers: {
                 'Content-Type': 'application/json',

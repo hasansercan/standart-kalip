@@ -4,7 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  VITE_API_BASE_URL = ""
+  VITE_API_BASE_URL = "https://standart-kalip.netlify.app/.netlify/functions/api"
 
 [[redirects]]
   from = "/api/*"
