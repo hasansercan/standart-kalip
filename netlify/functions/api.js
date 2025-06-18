@@ -50,12 +50,7 @@ module.exports.handler = async (event, context) => {
     console.log('Environment check:', {
         NODE_ENV: process.env.NODE_ENV,
         MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
-        NETLIFY: process.env.NETLIFY ? 'SET' : 'NOT SET',
-        // Cloudinary environment variables
-        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? 'SET' : 'NOT SET',
-        CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ? 'SET' : 'NOT SET',
-        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'NOT SET',
-        CLOUDINARY_URL: process.env.CLOUDINARY_URL ? 'SET' : 'NOT SET'
+        NETLIFY: process.env.NETLIFY ? 'SET' : 'NOT SET'
     });
 
     try {

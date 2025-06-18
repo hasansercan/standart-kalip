@@ -16,17 +16,6 @@ const UpdateSliderPage = () => {
     const { id: sliderId } = useParams();
     const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-    // Geçici: Normal upload endpoint kullan
-    const getUploadEndpoint = () => {
-        return `${apiUrl}/api/sliders/upload`;
-
-        // Cloudinary hazır olduğunda bu kısmı uncomment edin:
-        // if (import.meta.env.PROD || apiUrl.includes('netlify')) {
-        //     return `${apiUrl}/api/sliders/upload-cloud`;
-        // }
-        // return `${apiUrl}/api/sliders/upload`;
-    };
-
     const onFinish = async (values) => {
         setLoading(true);
         try {
@@ -69,29 +58,20 @@ const UpdateSliderPage = () => {
     const uploadProps = {
         name: 'image',
         multiple: false,
-        action: getUploadEndpoint(),
+        action: `${apiUrl}/api/sliders/upload`,
         accept: '.jpg,.jpeg,.png,.gif,.webp',
         onChange(info) {
             const { status } = info.file;
-            if (status === 'uploading') {
-                message.loading('Dosya yükleniyor...', 0);
-            } else if (status === 'done') {
-                message.destroy();
+            if (status === 'done') {
                 message.success(`${info.file.name} dosyası başarıyla yüklendi.`);
                 const imagePath = info.file.response.imagePath;
                 setUploadedImagePath(imagePath);
                 setImagePreview(imagePath);
                 form.setFieldsValue({ image: imagePath });
             } else if (status === 'error') {
-                message.destroy();
                 message.error(`${info.file.name} dosya yükleme başarısız.`);
             }
         },
-        onRemove() {
-            setUploadedImagePath(null);
-            setImagePreview(null);
-            form.setFieldsValue({ image: null });
-        }
     };
 
     useEffect(() => {
