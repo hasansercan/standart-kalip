@@ -4,17 +4,35 @@ const crypto = require('crypto');
 
 // Cloudinary yapılandırması (sadece production'da kullanılacak)
 let cloudinary = null;
-if (process.env.NODE_ENV === 'production' && process.env.CLOUDINARY_URL) {
+let cloudinaryConfigured = false;
+
+if (process.env.NODE_ENV === 'production') {
     try {
-        cloudinary = require('cloudinary').v2;
-        cloudinary.config({
-            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET
-        });
-        console.log('Cloudinary configured for production');
+        // Environment variables'ları kontrol et
+        const hasRequiredVars = process.env.CLOUDINARY_CLOUD_NAME &&
+            process.env.CLOUDINARY_API_KEY &&
+            process.env.CLOUDINARY_API_SECRET;
+
+        if (hasRequiredVars) {
+            cloudinary = require('cloudinary').v2;
+            cloudinary.config({
+                cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+                api_key: process.env.CLOUDINARY_API_KEY,
+                api_secret: process.env.CLOUDINARY_API_SECRET
+            });
+            cloudinaryConfigured = true;
+            console.log('✅ Cloudinary configured successfully');
+        } else {
+            console.warn('⚠️ Cloudinary environment variables not found. Using fallback mode.');
+            console.warn('Missing variables:', {
+                CLOUDINARY_CLOUD_NAME: !!process.env.CLOUDINARY_CLOUD_NAME,
+                CLOUDINARY_API_KEY: !!process.env.CLOUDINARY_API_KEY,
+                CLOUDINARY_API_SECRET: !!process.env.CLOUDINARY_API_SECRET
+            });
+        }
     } catch (error) {
-        console.warn('Cloudinary configuration failed:', error.message);
+        console.error('❌ Cloudinary configuration failed:', error.message);
+        cloudinaryConfigured = false;
     }
 }
 
@@ -55,7 +73,7 @@ const fileFilter = (req, file, cb) => {
 
 // Ortama göre storage seçimi
 const getStorage = (folderType) => {
-    if (process.env.NODE_ENV === 'production' && cloudinary) {
+    if (process.env.NODE_ENV === 'production' && cloudinaryConfigured) {
         return memoryStorage;
     }
 
@@ -97,6 +115,11 @@ const blogUpload = multer({
 // Cloudinary'ye dosya yükleme fonksiyonu
 const uploadToCloudinary = (buffer, folder, filename) => {
     return new Promise((resolve, reject) => {
+        if (!cloudinaryConfigured) {
+            reject(new Error('Cloudinary not configured. Please set environment variables.'));
+            return;
+        }
+
         const uploadOptions = {
             folder: `standart-kalip/${folder}`,
             public_id: filename.split('.')[0], // Extension olmadan
@@ -122,5 +145,6 @@ module.exports = {
     categoryUpload,
     blogUpload,
     uploadToCloudinary,
-    cloudinary: cloudinary
+    cloudinary: cloudinary,
+    cloudinaryConfigured
 };
