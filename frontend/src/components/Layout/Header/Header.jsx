@@ -151,12 +151,6 @@ const Header = ({ setIsSearchShow }) => {
               <Link to="/contact" className="cta-button">
                 TEKLİF AL
               </Link>
-
-              {user && JSON.parse(user).role === "admin" && (
-                <Link to="/admin/dashboard" className="admin-button">
-                  Admin
-                </Link>
-              )}
             </div>
 
             {/* Mobile Menu Button */}
