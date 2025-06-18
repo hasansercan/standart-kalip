@@ -58,14 +58,8 @@ const About = () => {
             try {
                 setLoading(true);
 
-                // Hakkımızda verilerini al
-                const aboutResponse = await fetch(`${apiUrl}/api/about`);
-                if (aboutResponse.ok) {
-                    const aboutData = await aboutResponse.json();
-                    setAboutData(aboutData || defaultAboutData);
-                } else {
-                    setAboutData(defaultAboutData);
-                }
+                // Hakkımızda verileri - şimdilik default kullan (admin panelinden yönetilebilir)
+                setAboutData(defaultAboutData);
 
                 // Özellikler verilerini al
                 const featuresResponse = await fetch(`${apiUrl}/api/features`);
@@ -120,14 +114,14 @@ const About = () => {
                     <div className="about-visual">
                         <div className="world-map">
                             <div className="map-container">
-                                <div className="continent north-america"></div>
-                                <div className="continent south-america"></div>
-                                <div className="continent europe"></div>
-                                <div className="continent africa"></div>
-                                <div className="continent asia"></div>
-                                <div className="continent australia"></div>
+                                <div key="north-america" className="continent north-america"></div>
+                                <div key="south-america" className="continent south-america"></div>
+                                <div key="europe" className="continent europe"></div>
+                                <div key="africa" className="continent africa"></div>
+                                <div key="asia" className="continent asia"></div>
+                                <div key="australia" className="continent australia"></div>
 
-                                <div className="location-pin turkey">
+                                <div key="turkey-pin" className="location-pin turkey">
                                     <div className="pin-marker"></div>
                                     <span className="pin-label">Türkiye</span>
                                 </div>
@@ -141,7 +135,7 @@ const About = () => {
                     <div className="features-grid">
                         {features.map((feature, index) => (
                             <div
-                                key={feature.id}
+                                key={`feature-${feature.id || index}`}
                                 className="feature-card"
                                 style={{ animationDelay: `${index * 0.1}s` }}
                             >

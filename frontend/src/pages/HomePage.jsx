@@ -59,14 +59,14 @@ const HomePage = () => {
   }
 
   return (
-    <React.Fragment>
-      {settings.homepage_sliders_enabled && <Sliders />}
-      {settings.homepage_categories_enabled && <Categories />}
-      {settings.homepage_about_enabled && <About />}
-      {settings.homepage_blogs_enabled && <Blogs />}
-      {settings.homepage_program_download_enabled && <ProgramDownload />}
-      {settings.homepage_references_enabled && <References />}
-    </React.Fragment>
+    <>
+      {settings.homepage_sliders_enabled && <Sliders key="sliders" />}
+      {settings.homepage_categories_enabled && <Categories key="categories" />}
+      {settings.homepage_about_enabled && <About key="about" />}
+      {settings.homepage_blogs_enabled && <Blogs key="blogs" />}
+      {settings.homepage_program_download_enabled && <ProgramDownload key="program-download" />}
+      {settings.homepage_references_enabled && <References key="references" />}
+    </>
   );
 };
 

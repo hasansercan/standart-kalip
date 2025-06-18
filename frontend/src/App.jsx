@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import AboutPage from "./pages/AboutPage";
-import AuthPage from "./pages/AuthPage";
 import BlogDetailsPage from "./pages/BlogDetailsPage";
 import BlogPage from "./pages/BlogPage";
 import CareersPage from "./pages/CareersPage";
@@ -59,7 +58,6 @@ function App() {
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/cart" element={<CartPage />} />
-      <Route path="/auth" element={<AuthPage />} />
 
       {/* Dinamik Kurumsal Sayfalar */}
       <Route path="/page/:slug" element={<DynamicPage />} />
