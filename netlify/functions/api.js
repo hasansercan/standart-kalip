@@ -14,10 +14,17 @@ const handler = serverless(app, {
 
         console.log('Original URL:', request.url);
 
-        // URL'i temizle - /.netlify/functions/api kısmını kaldır
+        // URL'i tamamen temizle
         let cleanUrl = request.url;
+
+        // /.netlify/functions/api kısmını kaldır
         if (cleanUrl.startsWith('/.netlify/functions/api')) {
             cleanUrl = cleanUrl.replace('/.netlify/functions/api', '');
+        }
+
+        // /api/api/ -> /api/ düzelt
+        if (cleanUrl.startsWith('/api/api/')) {
+            cleanUrl = cleanUrl.replace('/api/api/', '/api/');
         }
 
         // Eğer boşsa health check
@@ -25,8 +32,8 @@ const handler = serverless(app, {
             cleanUrl = '/api/health';
         }
 
-        // Eğer /api ile başlamıyorsa ve /api içermiyorsa ekle
-        if (!cleanUrl.startsWith('/api') && !cleanUrl.includes('/api/')) {
+        // Eğer /api ile başlamıyorsa ekle (sadece bir kez)
+        if (!cleanUrl.startsWith('/api')) {
             cleanUrl = '/api' + cleanUrl;
         }
 
@@ -39,15 +46,18 @@ module.exports.handler = async (event, context) => {
     // Netlify context'i ayarla
     context.callbackWaitsForEmptyEventLoop = false;
 
+    console.log('Function started');
     console.log('Environment check:', {
         NODE_ENV: process.env.NODE_ENV,
-        MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET'
+        MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
+        NETLIFY: process.env.NETLIFY ? 'SET' : 'NOT SET'
     });
 
     try {
         const result = await handler(event, context);
 
         console.log('API response status:', result.statusCode);
+        console.log('Response headers:', result.headers);
 
         return {
             ...result,
@@ -63,12 +73,14 @@ module.exports.handler = async (event, context) => {
         };
     } catch (error) {
         console.error('Netlify function error:', error);
+        console.error('Error stack:', error.stack);
 
         return {
             statusCode: 500,
             body: JSON.stringify({
                 error: 'Internal server error',
                 message: error.message,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
                 timestamp: new Date().toISOString()
             }),
             headers: {
