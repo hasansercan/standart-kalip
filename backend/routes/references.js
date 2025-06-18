@@ -112,24 +112,16 @@ router.post("/upload", categoryUpload.single('image'), (req, res) => {
             return res.status(400).json({ error: "Dosya yüklenmedi" });
         }
 
-        // Cloudinary kullanılıyorsa URL'i al, değilse local path kullan
-        let imagePath;
-        if (req.file.path && req.file.path.includes('cloudinary')) {
-            // Cloudinary URL'i
-            imagePath = req.file.path;
-        } else {
-            // Local dosya yolu (development için)
-            imagePath = `/img/brands/${req.file.filename}`;
-        }
+        // Dosya yolu frontend'e göre ayarla
+        const imagePath = `/img/brands/${req.file.filename}`;
 
         res.status(200).json({
             message: "Dosya başarıyla yüklendi",
             imagePath: imagePath,
-            filename: req.file.filename || req.file.public_id
+            filename: req.file.filename
         });
     } catch (error) {
-        console.error('Reference upload error:', error);
-        res.status(500).json({ error: "Dosya yükleme hatası: " + error.message });
+        res.status(500).json({ error: "Dosya yükleme hatası" });
     }
 });
 

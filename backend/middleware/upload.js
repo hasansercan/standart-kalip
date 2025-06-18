@@ -1,27 +1,6 @@
 const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-
-// Cloudinary konfigürasyonu
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Cloudinary storage oluştur
-const createCloudinaryStorage = (folder) => {
-    return new CloudinaryStorage({
-        cloudinary: cloudinary,
-        params: {
-            folder: `standart-kalip/${folder}`,
-            allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-            transformation: [{ quality: 'auto', fetch_format: 'auto' }]
-        },
-    });
-};
 
 // Vercel için memory storage kullanıyoruz (file system read-only)
 // Production'da Cloudinary, AWS S3 veya benzeri cloud storage kullanılmalı
@@ -42,16 +21,8 @@ const createDiskStorage = (folder) => {
     });
 };
 
-// Storage seçimi - production'da cloudinary, development'ta disk
+// Storage seçimi - production'da memory, development'ta disk
 const getStorage = (folder) => {
-    // Eğer Cloudinary config varsa kullan
-    if (process.env.CLOUDINARY_CLOUD_NAME &&
-        process.env.CLOUDINARY_API_KEY &&
-        process.env.CLOUDINARY_API_SECRET) {
-        return createCloudinaryStorage(folder);
-    }
-
-    // Production'da memory (geçici), development'ta disk
     return process.env.NODE_ENV === 'production' ? memoryStorage : createDiskStorage(folder);
 };
 
@@ -102,6 +73,5 @@ const blogUpload = multer({
 module.exports = {
     sliderUpload,
     categoryUpload,
-    blogUpload,
-    cloudinary
+    blogUpload
 };

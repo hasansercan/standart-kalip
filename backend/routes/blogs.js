@@ -10,24 +10,16 @@ router.post("/upload", blogUpload.single("image"), (req, res) => {
             return res.status(400).json({ error: "Resim dosyası yüklenmedi." });
         }
 
-        // Cloudinary kullanılıyorsa URL'i al, değilse local path kullan
-        let imagePath;
-        if (req.file.path && req.file.path.includes('cloudinary')) {
-            // Cloudinary URL'i
-            imagePath = req.file.path;
-        } else {
-            // Local dosya yolu (development için)
-            imagePath = `/img/blogs/${req.file.filename}`;
-        }
+        // Frontend'te kullanılacak resim yolu
+        const imagePath = `/img/blogs/${req.file.filename}`;
 
         res.status(200).json({
             message: "Resim başarıyla yüklendi.",
             imagePath: imagePath,
-            fileName: req.file.filename || req.file.public_id
+            fileName: req.file.filename
         });
     } catch (error) {
-        console.error('Blog upload error:', error);
-        res.status(500).json({ error: "Resim yükleme sırasında hata oluştu: " + error.message });
+        res.status(500).json({ error: "Resim yükleme sırasında hata oluştu." });
     }
 });
 
