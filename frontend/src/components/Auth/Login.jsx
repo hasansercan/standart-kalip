@@ -17,6 +17,9 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      console.log('Login API URL:', buildApiUrl('/auth/login')); // Debug
+      console.log('Login Form Data:', formData); // Debug
+
       const response = await fetch(buildApiUrl('/auth/login'), {
         method: "POST",
         headers: {
@@ -25,8 +28,12 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log('Login Response status:', response.status); // Debug
+      console.log('Login Response ok:', response.ok); // Debug
+
       if (response.ok) {
         const data = await response.json();
+        console.log('Login Response data:', data); // Debug
         localStorage.setItem("user", JSON.stringify(data));
         message.success("Giriş başarılı.");
         if (data.role === "admin") {
@@ -35,9 +42,12 @@ const Login = () => {
           navigate("/");
         }
       } else {
+        const errorData = await response.text();
+        console.log('Login Error response:', errorData); // Debug
         message.error("Giriş başarısız.");
       }
     } catch (error) {
+      console.error('Login error:', error); // Debug
       message.error("Bağlantı hatası. Lütfen tekrar deneyin.");
     }
   };

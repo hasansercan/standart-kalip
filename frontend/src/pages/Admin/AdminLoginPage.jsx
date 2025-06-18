@@ -21,6 +21,9 @@ const AdminLoginPage = () => {
         setLoading(true);
 
         try {
+            console.log('API URL:', buildApiUrl('/auth/login')); // Debug
+            console.log('Form Data:', formData); // Debug
+
             const response = await fetch(buildApiUrl('/auth/login'), {
                 method: "POST",
                 headers: {
@@ -29,8 +32,12 @@ const AdminLoginPage = () => {
                 body: JSON.stringify(formData),
             });
 
+            console.log('Response status:', response.status); // Debug
+            console.log('Response ok:', response.ok); // Debug
+
             if (response.ok) {
                 const data = await response.json();
+                console.log('Response data:', data); // Debug
 
                 if (data.role === "admin" || data.role === "moderator") {
                     localStorage.setItem("user", JSON.stringify(data));
@@ -41,9 +48,12 @@ const AdminLoginPage = () => {
                     message.error("Bu alan sadece yöneticiler ve moderatörler için!");
                 }
             } else {
+                const errorData = await response.text();
+                console.log('Error response:', errorData); // Debug
                 message.error("Giriş başarısız. Bilgilerinizi kontrol edin.");
             }
         } catch (error) {
+            console.error('Login error:', error); // Debug
             message.error("Bir hata oluştu. Lütfen tekrar deneyin.");
         } finally {
             setLoading(false);

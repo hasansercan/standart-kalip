@@ -19,6 +19,9 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
+      console.log('Register API URL:', buildApiUrl('/auth/register')); // Debug
+      console.log('Register Form Data:', formData); // Debug
+
       const response = await fetch(buildApiUrl('/auth/register'), {
         method: "POST",
         headers: {
@@ -27,17 +30,25 @@ const Register = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log('Register Response status:', response.status); // Debug
+      console.log('Register Response ok:', response.ok); // Debug
+
       if (response.ok) {
         const data = await response.json();
+        console.log('Register Response data:', data); // Debug
         // const { password, ...rest } = data;
 
         localStorage.setItem("user", JSON.stringify(data));
         message.success("Kayıt başarılı.");
         navigate("/");
       } else {
+        const errorData = await response.text();
+        console.log('Register Error response:', errorData); // Debug
         message.error("Kayıt başarısız.");
       }
     } catch (error) {
+      console.error('Register error:', error); // Debug
+      message.error("Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 
