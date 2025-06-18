@@ -10,7 +10,7 @@ Netlify'de resim upload etmeye çalıştığınızda resimler görünmüyor ve u
 2. Ücretsiz hesap oluşturun
 3. Dashboard'dan şu bilgileri alın:
    - Cloud Name
-   - API Key
+   - API Key123
    - API Secret
 
 ### 2. Netlify Environment Variables Ayarlayın
