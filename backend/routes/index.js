@@ -14,6 +14,11 @@ const programRoute = require("./programs.js");
 const referenceRoute = require("./references.js");
 const settingsRoute = require("./settings.js");
 const pageRoute = require("./pages.js");
+const contactRoute = require("./contacts.js");
+const jobRoute = require("./jobs.js");
+const jobApplicationRoute = require("./jobApplications.js");
+const dashboardRoute = require("./dashboard.js");
+const qualityManagementRoute = require("./qualityManagement.js");
 
 // Her rotayı ilgili yol altında kullanıyoruz
 router.use("/categories", categoryRoute);
@@ -28,5 +33,10 @@ router.use("/programs", programRoute);
 router.use("/references", referenceRoute);
 router.use("/settings", settingsRoute);
 router.use("/pages", pageRoute);
+router.use("/contacts", contactRoute);
+router.use("/jobs", jobRoute);
+router.use("/job-applications", jobApplicationRoute);
+router.use("/dashboard", dashboardRoute);
+router.use("/quality-management", qualityManagementRoute);
 
 module.exports = router;

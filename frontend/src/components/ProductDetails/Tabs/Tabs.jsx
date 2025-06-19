@@ -1,5 +1,6 @@
-import { useState } from "react";
+import DOMPurify from "dompurify";
 import PropTypes from "prop-types";
+import { useState } from "react";
 import Reviews from "../../Reviews/Reviews";
 import "./Tabs.css";
 
@@ -44,19 +45,17 @@ const Tabs = ({ singleProduct, setSingleProduct }) => {
       </ul>
       <div className="tab-panel">
         <div
-          className={`tab-panel-descriptions content ${
-            activeTab === "desc" ? "active" : ""
-          }`}
+          className={`tab-panel-descriptions content ${activeTab === "desc" ? "active" : ""
+            }`}
         >
           <div
             className="product-description"
-            dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(singleProduct.description) }}
           ></div>
         </div>
         <div
-          className={`tab-panel-information content ${
-            activeTab === "info" ? "active" : ""
-          }`}
+          className={`tab-panel-information content ${activeTab === "info" ? "active" : ""
+            }`}
           id="info"
         >
           <h3>Additional information</h3>

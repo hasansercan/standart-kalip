@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User.js");
 const bcrypt = require("bcryptjs");
+const { authenticateToken, requireAdmin } = require("../middleware/authMiddleware.js");
+const { validateCreateUser, validateUpdateUser } = require("../middleware/validation.js");
 
 // Yeni kullanıcı oluşturma (Create) - Admin tarafından
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, requireAdmin, validateCreateUser, async (req, res) => {
   try {
     const { username, email, password, role, avatar } = req.body;
 
@@ -37,7 +39,7 @@ router.post("/", async (req, res) => {
 });
 
 // Tüm kullanıcıları getirme (Read - All)
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const users = await User.find().select("-password");
 
@@ -48,7 +50,7 @@ router.get("/", async (req, res) => {
 });
 
 // Belirli bir kullanıcıyı getirme (Read - Single)
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const userId = req.params.userId;
 
@@ -65,7 +67,7 @@ router.get("/:userId", async (req, res) => {
 });
 
 // Kullanıcı güncelleme (Update)
-router.put("/:userId", async (req, res) => {
+router.put("/:userId", authenticateToken, requireAdmin, validateUpdateUser, async (req, res) => {
   try {
     const userId = req.params.userId;
     const { username, email, password, role, avatar, isActive } = req.body;
@@ -110,7 +112,7 @@ router.put("/:userId", async (req, res) => {
 });
 
 // Kullanıcı silme (Delete) - Admin hesabı silinmez
-router.delete("/:userId", async (req, res) => {
+router.delete("/:userId", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const userId = req.params.userId;
 
@@ -132,7 +134,7 @@ router.delete("/:userId", async (req, res) => {
 });
 
 // Kullanıcı aktif/pasif durumu değiştirme
-router.patch("/:userId/status", async (req, res) => {
+router.patch("/:userId/status", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const userId = req.params.userId;
     const { isActive } = req.body;

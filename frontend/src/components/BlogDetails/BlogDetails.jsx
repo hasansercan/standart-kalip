@@ -1,5 +1,6 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, message, Spin, Tag } from "antd";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./BlogDetails.css";
@@ -157,7 +158,7 @@ const BlogDetails = () => {
               <p>{blog.excerpt}</p>
             </div>
 
-            <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content }}>
+            <div className="blog-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }}>
             </div>
 
             {blog.tags && blog.tags.length > 0 && (

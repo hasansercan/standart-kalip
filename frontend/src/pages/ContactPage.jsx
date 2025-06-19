@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { buildApiUrl } from "../config/apiConfig";
 import "./ContactPage.css";
 
 const ContactPage = () => {
@@ -9,6 +10,66 @@ const ContactPage = () => {
     subject: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Bot koruması için
+  const [honeypot, setHoneypot] = useState("");
+  const [mathQuestion, setMathQuestion] = useState({ question: "", answer: 0 });
+  const [mathAnswer, setMathAnswer] = useState("");
+
+  // Matematiksel soru oluştur
+  const generateMathQuestion = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const operations = ['+', '-', '*'];
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+
+    let answer;
+    let question;
+
+    switch (operation) {
+      case '+':
+        answer = num1 + num2;
+        question = `${num1} + ${num2} = ?`;
+        break;
+      case '-':
+        answer = Math.max(num1, num2) - Math.min(num1, num2);
+        question = `${Math.max(num1, num2)} - ${Math.min(num1, num2)} = ?`;
+        break;
+      case '*':
+        answer = num1 * num2;
+        question = `${num1} × ${num2} = ?`;
+        break;
+      default:
+        answer = num1 + num2;
+        question = `${num1} + ${num2} = ?`;
+    }
+
+    setMathQuestion({ question, answer });
+  };
+
+  // Component mount olduğunda matematik sorusu oluştur
+  React.useEffect(() => {
+    generateMathQuestion();
+  }, []);
+
+  // Yeni mesaj göndermek için formu sıfırla
+  const handleNewMessage = () => {
+    setIsSubmitted(false);
+    setSubmitMessage("");
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: ""
+    });
+    setMathAnswer("");
+    setHoneypot("");
+    generateMathQuestion();
+  };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -17,16 +78,79 @@ const ContactPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: ""
-    });
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    // Bot koruması kontrolleri
+    if (honeypot.trim() !== "") {
+      setSubmitMessage("Bot aktivitesi tespit edildi. Lütfen sayfayı yenileyin.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (parseInt(mathAnswer) !== mathQuestion.answer) {
+      setSubmitMessage("Matematik sorusunun cevabı yanlış. Lütfen tekrar deneyin.");
+      setIsSubmitting(false);
+      generateMathQuestion();
+      setMathAnswer("");
+      return;
+    }
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      setSubmitMessage("Lütfen tüm zorunlu alanları doldurun.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Email format kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitMessage("Lütfen geçerli bir e-posta adresi girin.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(buildApiUrl("/contacts"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          botProtection: {
+            honeypot: honeypot,
+            mathAnswer: parseInt(mathAnswer),
+            expectedAnswer: mathQuestion.answer
+          }
+        }),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setSubmitMessage("Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: ""
+        });
+        setMathAnswer("");
+        setHoneypot("");
+        generateMathQuestion();
+      } else {
+        const errorData = await response.json();
+        setSubmitMessage(errorData.error || "Mesaj gönderilirken bir hata oluştu.");
+      }
+    } catch (error) {
+      console.error("Mesaj gönderme hatası:", error);
+      setSubmitMessage("Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -97,73 +221,161 @@ const ContactPage = () => {
           <div className="contact-layout">
             {/* Contact Form */}
             <div className="form-area">
-              <div className="form-header">
-                <h2>Mesaj Gönderin</h2>
-                <p>Projeleriniz ve talepleriniz için bize yazın</p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="contact-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Ad Soyad</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      placeholder="Ad Soyad"
-                      required
-                    />
+              {!isSubmitted ? (
+                <>
+                  <div className="form-header">
+                    <h2>Mesaj Gönderin</h2>
+                    <p>Projeleriniz ve talepleriniz için bize yazın</p>
                   </div>
-                  <div className="form-group">
-                    <label>E-posta</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      placeholder="E-posta adresiniz"
-                      required
-                    />
+
+                  <form onSubmit={handleSubmit} className="contact-form">
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Ad Soyad</label>
+                        <input
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) => handleInputChange('name', e.target.value)}
+                          placeholder="Ad Soyad"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>E-posta</label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          placeholder="E-posta adresiniz"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Telefon</label>
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => handleInputChange('phone', e.target.value)}
+                          placeholder="Telefon numaranız"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Konu</label>
+                        <input
+                          type="text"
+                          value={formData.subject}
+                          onChange={(e) => handleInputChange('subject', e.target.value)}
+                          placeholder="Mesaj konusu"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Mesajınız</label>
+                      <textarea
+                        value={formData.message}
+                        onChange={(e) => handleInputChange('message', e.target.value)}
+                        rows="6"
+                        placeholder="Mesajınızı buraya yazınız..."
+                        required
+                      ></textarea>
+                    </div>
+
+                    {/* Honeypot field - Bot'lar tarafından doldurulacak gizli alan */}
+                    <div style={{ display: 'none' }}>
+                      <label>Bu alanı doldurmayın</label>
+                      <input
+                        type="text"
+                        value={honeypot}
+                        onChange={(e) => setHoneypot(e.target.value)}
+                        tabIndex="-1"
+                        autoComplete="off"
+                      />
+                    </div>
+
+                    {/* Matematik doğrulama */}
+                    <div className="form-group">
+                      <label>Güvenlik Doğrulaması *</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                        <span style={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#333',
+                          background: '#f5f5f5',
+                          padding: '10px 15px',
+                          borderRadius: '5px',
+                          border: '1px solid #ddd'
+                        }}>
+                          {mathQuestion.question}
+                        </span>
+                      </div>
+                      <input
+                        type="number"
+                        value={mathAnswer}
+                        onChange={(e) => setMathAnswer(e.target.value)}
+                        placeholder="Cevabı yazın"
+                        required
+                        style={{ maxWidth: '150px' }}
+                      />
+                      <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+                        Yukarıdaki matematik sorusunun cevabını yazın
+                      </small>
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                      {isSubmitting ? "Gönderiliyor..." : "Mesaj Gönder"}
+                      {!isSubmitting && <i className="bi bi-send"></i>}
+                    </button>
+
+                    {submitMessage && (
+                      <div className={`submit-message ${submitMessage.includes("başarıyla") ? "success" : "error"}`}>
+                        {submitMessage}
+                      </div>
+                    )}
+                  </form>
+                </>
+              ) : (
+                <div className="success-container">
+                  <div className="success-icon">
+                    <i className="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div className="success-content">
+                    <h2>Mesajınız Gönderildi!</h2>
+                    <p>Teşekkür ederiz! Mesajınızı aldık ve en kısa sürede size dönüş yapacağız.</p>
+                    <div className="success-details">
+                      <div className="detail-item">
+                        <i className="bi bi-clock"></i>
+                        <span>Genellikle 24 saat içinde yanıtlıyoruz</span>
+                      </div>
+                      <div className="detail-item">
+                        <i className="bi bi-envelope"></i>
+                        <span>E-posta adresinize bilgi gelecek</span>
+                      </div>
+                      <div className="detail-item">
+                        <i className="bi bi-telephone"></i>
+                        <span>Acil durumlar için bizi arayabilirsiniz</span>
+                      </div>
+                    </div>
+                    <div className="success-actions">
+                      <button
+                        onClick={handleNewMessage}
+                        className="new-message-btn"
+                      >
+                        <i className="bi bi-plus-circle"></i>
+                        Yeni Mesaj Gönder
+                      </button>
+                      <a href="/" className="home-btn">
+                        <i className="bi bi-house"></i>
+                        Ana Sayfaya Dön
+                      </a>
+                    </div>
                   </div>
                 </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Telefon</label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      placeholder="Telefon numaranız"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Konu</label>
-                    <input
-                      type="text"
-                      value={formData.subject}
-                      onChange={(e) => handleInputChange('subject', e.target.value)}
-                      placeholder="Mesaj konusu"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Mesajınız</label>
-                  <textarea
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    rows="6"
-                    placeholder="Mesajınızı buraya yazınız..."
-                    required
-                  ></textarea>
-                </div>
-
-                <button type="submit" className="submit-btn">
-                  Mesaj Gönder
-                  <i className="bi bi-send"></i>
-                </button>
-              </form>
+              )}
             </div>
 
             {/* Map Area */}

@@ -1,266 +1,290 @@
 # Standart Kalıp E-Commerce Platform
 
-Modern ve responsive e-ticaret platformu - Kalıp endüstrisi için özel tasarlanmış.
+Modern ve güvenli e-ticaret platformu. React frontend ve Node.js/Express backend ile geliştirilmiştir.
 
-## 🚀 Netlify Deployment
+## 🚀 Özellikler
 
-Bu proje Netlify'de serverless functions ile deploy edilmeye hazırdır.
+- ✅ Modern React frontend (Vite)
+- ✅ Node.js/Express backend API
+- ✅ MongoDB veritabanı
+- ✅ JWT tabanlı kimlik doğrulama
+- ✅ Admin paneli
+- ✅ Ürün yönetimi
+- ✅ Blog sistemi
+- ✅ İletişim formu
+- ✅ Kalite yönetim sistemi
+- ✅ İş başvuru sistemi
+- ✅ Stripe ödeme entegrasyonu
+- ✅ Cloudinary görsel yönetimi
+- ✅ Responsive tasarım
+- ✅ Docker desteği
+- ✅ SSL sertifikası
+- ✅ Production ready
 
-### Otomatik Deployment
+## 📋 Gereksinimler
 
-1. **GitHub Repository'yi Netlify'e bağlayın**
-2. **Build Settings:**
-   - Build command: `npm ci && npm run build`
-   - Publish directory: `frontend/dist`
-   - Functions directory: `netlify/functions`
+### Local Development
+- Node.js 18+
+- npm 8+
+- MongoDB (Docker ile otomatik kurulum)
 
-### Environment Variables
+### Production Deployment
+- Ubuntu 20.04+ sunucu
+- Docker & Docker Compose
+- Nginx
+- SSL sertifikası (Let's Encrypt)
 
-Netlify dashboard'da şu environment variables'ları ekleyin:
+## 🛠️ Local Development
 
-```bash
-# Backend Database
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/standart-kalip
+### Hızlı Başlangıç
 
-# Environment
-NODE_ENV=production
-
-# Frontend URL (Netlify'den alınan URL)
-FRONTEND_URL=https://your-site-name.netlify.app
-
-# Stripe (opsiyonel)
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-
-# Netlify otomatik ayarlar
-VITE_API_BASE_URL=/.netlify/functions/api
-NETLIFY=true
-```
-
-### 📋 Deployment Checklist
-
-- [x] ✅ Netlify.toml konfigürasyonu
-- [x] ✅ Serverless functions optimizasyonu
-- [x] ✅ CORS ayarları
-- [x] ✅ Build optimizasyonu
-- [x] ✅ Security headers
-- [x] ✅ Environment variables template
-
-### 🔧 Local Development
-
-```bash
-# Tüm dependencies'leri yükle
-npm run install:all
-
-# Development mode (frontend + backend)
-npm run dev
-
-# Sadece frontend
-npm run frontend
-
-# Sadece backend
-npm run backend
-```
-
-### 📁 Project Structure
-
-```
-standart-kalip/
-├── frontend/           # React + Vite frontend
-├── backend/           # Express.js API
-├── netlify/
-│   └── functions/     # Serverless functions
-├── netlify.toml       # Netlify configuration
-└── package.json       # Root package.json
-```
-
-### 🌐 API Endpoints
-
-Production'da API endpoints:
-- Base URL: `https://your-site-name.netlify.app/.netlify/functions/api`
-- Health Check: `/.netlify/functions/api/health`
-- Categories: `/.netlify/functions/api/categories`
-- Products: `/.netlify/functions/api/products`
-- Blogs: `/.netlify/functions/api/blogs`
-
-### 🛠️ Technologies
-
-**Frontend:**
-- React 18
-- Vite
-- Ant Design
-- React Router DOM
-- Framer Motion
-
-**Backend:**
-- Node.js + Express
-- MongoDB + Mongoose
-- Netlify Functions
-- Serverless HTTP
-
-### 📱 Features
-
-- 📊 Admin Panel
-- 🛒 Shopping Cart
-- 📝 Blog System
-- 📁 Category Management
-- 🔍 Product Search
-- 📞 Contact Forms
-- 📱 Responsive Design
-- 🔒 Authentication
-- 💳 Stripe Integration
-
-### 🚀 Quick Deploy
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/standart-kalip)
-
-### 📞 Support
-
-Teknik destek için: [info@standartkalip.com](mailto:info@standartkalip.com)
-
-## 🚀 Proje Yapısı
-
-```
-standart-kalip/
-├── backend/           # Node.js API Server
-├── frontend/          # React.js Client
-├── package.json       # Root package (Monorepo)
-└── README.md         # Bu dosya
-```
-
-## 🛠️ Teknolojiler
-
-### Backend
-- **Node.js** & **Express.js** - API Server
-- **MongoDB** & **Mongoose** - Veritabanı
-- **Stripe** - Ödeme sistemi
-- **Multer** - Dosya yükleme
-- **JWT** - Kimlik doğrulama
-
-### Frontend
-- **React.js** & **Vite** - Modern frontend
-- **React Router** - Sayfa yönlendirme
-- **Ant Design** - UI komponentleri
-- **Framer Motion** - Animasyonlar
-- **React Slick** - Slider
-- **Recharts** - Grafikler
-
-## 📦 Kurulum
-
-### 1. Proje dosyalarını indirin
+1. **Projeyi klonlayın:**
 ```bash
 git clone <repository-url>
 cd standart-kalip
 ```
 
-### 2. Tüm bağımlılıkları yükleyin
+2. **Environment dosyasını yapılandırın:**
 ```bash
-npm run install:all
+cp .env.local.example .env.local
+# .env.local dosyasını düzenleyin
 ```
 
-### 3. Environment dosyalarını ayarlayın
+3. **Development sunucularını başlatın:**
+```bash
+chmod +x local-dev.sh
+./local-dev.sh start
+```
 
-**Backend için (.env dosyası oluşturun):**
+4. **Uygulamaya erişin:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+- Admin Panel: http://localhost:5173/admin
+
+### Manuel Kurulum
+
+#### Backend
 ```bash
 cd backend
-cp env.example .env
-# .env dosyasını düzenleyerek gerçek değerlerinizi girin
+npm install
+npm run dev
 ```
 
-**Frontend için (.env dosyası oluşturun):**
+#### Frontend
 ```bash
 cd frontend
-cp env.example .env
-# .env dosyasını düzenleyerek gerçek değerlerinizi girin
-```
-
-### 4. Veritabanını başlatın (MongoDB)
-```bash
-# MongoDB'nin kurulu ve çalışır durumda olduğundan emin olun
-```
-
-### 5. Geliştirme sunucusunu başlatın
-```bash
-# Hem frontend hem backend'i aynı anda çalıştır
+npm install
 npm run dev
-
-# Veya ayrı ayrı:
-npm run backend   # Sadece backend
-npm run frontend  # Sadece frontend
 ```
 
-## 🔧 Kullanılabilir Komutlar
+### Environment Variables
 
-### Root seviyede (Monorepo)
+`.env.local` dosyasında aşağıdaki değişkenleri yapılandırın:
+
+```env
+# Database
+MONGO_URI=mongodb://localhost:27017/standart_kalip_dev
+
+# JWT
+JWT_SECRET=your_jwt_secret
+
+# Cloudinary (Görsel yükleme)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Stripe (Ödeme)
+STRIPE_SECRET_KEY=sk_test_your_test_key
+
+# API URL
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+## 🌐 Production Deployment
+
+### Otomatik Deployment
+
+1. **Environment dosyasını yapılandırın:**
 ```bash
-npm run dev          # Frontend ve backend'i aynı anda çalıştır
-npm run start        # Sadece backend'i production modunda çalıştır
-npm run build        # Frontend'i build et
-npm run install:all  # Tüm bağımlılıkları yükle
-npm run clean        # Tüm node_modules'leri temizle
+cp .env.production.example .env.production
+# .env.production dosyasını production değerleri ile düzenleyin
 ```
 
-### Backend (/backend)
+2. **Deployment script'ini çalıştırın:**
 ```bash
-npm start           # Production server
-npm run dev         # Development server (nodemon)
-npm run seed        # Veritabanına örnek veri ekle
-npm run clean       # node_modules temizle
+chmod +x deploy.sh
+./deploy.sh
 ```
 
-### Frontend (/frontend)
+### Manuel Deployment
+
+#### 1. Sunucu Hazırlığı
+
+Ubuntu sunucunuzda:
 ```bash
-npm run dev         # Development server
-npm run build       # Production build
-npm run preview     # Build'i önizleme
-npm run clean       # Dosyaları temizle
+# Dosyaları sunucuya yükleyin
+scp -r . root@104.247.163.244:/var/www/standart-kalip/
+
+# Sunucuya bağlanın
+ssh root@104.247.163.244
+
+# Kurulum script'ini çalıştırın
+cd /var/www/standart-kalip
+chmod +x setup-server.sh
+./setup-server.sh
 ```
 
-## 🌐 Portlar
+#### 2. Environment Yapılandırması
 
-- **Frontend**: http://localhost:5173
-- **Backend**: http://localhost:5000
+`.env.production` dosyasını production değerleri ile düzenleyin:
+```env
+MONGO_URI=mongodb://standart-kalip-mongo:27017/standart_kalip
+JWT_SECRET=very_secure_production_key
+FRONTEND_URL=https://decayazilim.com.tr
+VITE_API_BASE_URL=https://api.decayazilim.com.tr
+```
 
-## 📂 Özellikler
+#### 3. Docker Containers Başlatma
 
-### E-Commerce
-- ✅ Ürün katalogu
-- ✅ Kategori yönetimi
-- ✅ Sepet işlemleri
-- ✅ Stripe ile ödeme
-- ✅ Kullanıcı kayıt/giriş
+```bash
+docker-compose --env-file .env.production up -d --build
+```
 
-### CMS
-- ✅ Blog yönetimi
-- ✅ Sayfa yönetimi
-- ✅ Slider yönetimi
-- ✅ Referans yönetimi
-- ✅ Program yönetimi
+#### 4. SSL Sertifikası Kurulumu
 
-### Admin Panel
-- ✅ Tüm içerik yönetimi
-- ✅ Kullanıcı yönetimi
-- ✅ Sipariş takibi
-- ✅ Dashboard
+```bash
+certbot --nginx -d decayazilim.com.tr -d www.decayazilim.com.tr
+```
 
-## 🔒 Güvenlik
+#### 5. DNS Yapılandırması
 
-- JWT tabanlı kimlik doğrulama
-- Bcrypt ile şifre hashleme
-- CORS koruması
-- Input validation
+Domain sağlayıcınızda aşağıdaki kayıtları ekleyin:
+```
+A     decayazilim.com.tr          104.247.163.244
+A     www.decayazilim.com.tr      104.247.163.244
+A     api.decayazilim.com.tr      104.247.163.244
+```
 
-## 📈 Production Deployment
+## 📊 Monitoring & Maintenance
 
-Proje Vercel'de deploy edilmeye hazırdır:
+### Logları İzleme
+```bash
+# Tüm servislerin logları
+docker-compose logs -f
 
-1. `vercel.json` konfigürasyonu mevcut
-2. `npm run vercel-build` komutu ile build
-3. Environment variable'ları production'da ayarlayın
+# Sadece backend logları
+docker-compose logs -f backend
 
-## 📝 Lisans
+# Sadece frontend logları
+docker-compose logs -f frontend
+```
 
-ISC License
+### Backup
+```bash
+# Otomatik backup (günlük)
+/usr/local/bin/backup-standart-kalip.sh
 
-## 👥 Geliştirici
+# Manuel backup
+docker exec standart-kalip-mongo mongodump --out /tmp/backup
+```
 
-**Standart Kalıp**
+### Servis Yönetimi
+```bash
+# Servisleri yeniden başlat
+systemctl restart standart-kalip
+
+# Servis durumunu kontrol et
+systemctl status standart-kalip
+
+# Servisleri durdur
+docker-compose down
+
+# Servisleri güncelle
+docker-compose up -d --build
+```
+
+## 🔧 Development Commands
+
+```bash
+# Local development başlat
+./local-dev.sh start
+
+# Development durdur
+./local-dev.sh stop
+
+# Development yeniden başlat
+./local-dev.sh restart
+
+# Logları göster
+./local-dev.sh logs
+
+# Backend seed data
+cd backend && npm run seed
+
+# Frontend build
+cd frontend && npm run build
+
+# Dependency temizliği
+cd backend && npm run clean
+cd frontend && npm run clean
+```
+
+## 📁 Proje Yapısı
+
+```
+standart-kalip/
+├── backend/                 # Node.js/Express API
+│   ├── api/                # API rotaları
+│   ├── middleware/         # Middleware'ler
+│   ├── models/            # MongoDB modelleri
+│   ├── routes/            # Route tanımları
+│   ├── seeds/             # Veritabanı seed dosyaları
+│   └── server.js          # Ana sunucu dosyası
+├── frontend/               # React frontend
+│   ├── src/
+│   │   ├── components/    # React componentleri
+│   │   ├── pages/         # Sayfa componentleri
+│   │   ├── config/        # Konfigürasyon dosyaları
+│   │   └── context/       # React context'leri
+│   └── dist/              # Build çıktısı
+├── docker-compose.yml      # Docker Compose
+├── Dockerfile             # Backend Dockerfile
+├── deploy.sh              # Deployment script
+├── setup-server.sh        # Sunucu kurulum script
+├── local-dev.sh          # Local development script
+├── .env.production       # Production environment
+├── .env.local           # Local environment
+└── README.md            # Bu dosya
+```
+
+## 🔐 Güvenlik
+
+- ✅ JWT tabanlı kimlik doğrulama
+- ✅ Helmet.js güvenlik başlıkları
+- ✅ Rate limiting
+- ✅ MongoDB injection koruması
+- ✅ CORS yapılandırması
+- ✅ SSL/TLS sertifikası
+- ✅ Environment variable'lar ile hassas veri koruması
+
+## 🤝 Katkıda Bulunma
+
+1. Fork edin
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Commit edin (`git commit -m 'Add amazing feature'`)
+4. Branch'i push edin (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
+
+## 📞 Destek
+
+Herhangi bir sorun yaşarsanız:
+- Issue oluşturun
+- Email: admin@decayazilim.com.tr
+
+## 📄 Lisans
+
+Bu proje [MIT License](LICENSE) altında lisanslanmıştır.
+
+---
+
+**Standart Kalıp E-Commerce Platform** - Modern, güvenli ve ölçeklenebilir e-ticaret çözümü.

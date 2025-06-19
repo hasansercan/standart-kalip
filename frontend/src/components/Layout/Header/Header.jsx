@@ -148,9 +148,9 @@ const Header = ({ setIsSearchShow }) => {
 
             {/* CTA Button */}
             <div className="header-cta">
-              <Link to="/contact" className="cta-button">
+              {/*<Link to="/contact" className="cta-button">
                 TEKLİF AL
-              </Link>
+              </Link>*/}
             </div>
 
             {/* Mobile Menu Button */}

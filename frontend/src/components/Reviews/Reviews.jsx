@@ -1,9 +1,8 @@
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import ReviewForm from "./ReviewForm";
 import ReviewItem from "./ReviewItem";
-import PropTypes from "prop-types";
 import "./Reviews.css";
-import { useEffect, useState } from "react";
-import { message } from "antd";
 
 const Reviews = ({ active, singleProduct, setSingleProduct }) => {
   const [users, setUsers] = useState([]);
@@ -13,16 +12,18 @@ const Reviews = ({ active, singleProduct, setSingleProduct }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/users`);
-
-        if (response.ok) {
-          const data = await response.json();
-          setUsers(data);
-        } else {
-          message.error("Veri getirme başarısız.");
-        }
+        // Bu bileşen ürün yorumları için kullanılıyor, admin paneli değil
+        // Şimdilik kullanıcı listesi almayı iptal ediyoruz
+        // const response = await fetch(`${apiUrl}/api/users`);
+        // if (response.ok) {
+        //   const data = await response.json();
+        //   setUsers(data);
+        // } else {
+        //   message.error("Veri getirme başarısız.");
+        // }
       } catch (error) {
-        }
+        console.error("User fetch error:", error);
+      }
     };
     fetchUsers();
   }, [apiUrl]);

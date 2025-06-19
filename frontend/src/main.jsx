@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import App from "./App";
 import ScrollToTop from "./components/ScrollToTop";
+import { AuthProvider } from "./context/AuthContext";
 import CartProvider from "./context/CartProvider";
 import "./index.css";
 import { Layout } from "./layouts/Layout";
@@ -16,10 +17,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     }}
   >
     <ScrollToTop />
-    <CartProvider>
-      <Layout>
-        <App />
-      </Layout>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Layout>
+          <App />
+        </Layout>
+      </CartProvider>
+    </AuthProvider>
   </BrowserRouter>
 );

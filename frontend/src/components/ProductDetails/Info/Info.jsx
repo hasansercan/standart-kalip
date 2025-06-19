@@ -1,7 +1,8 @@
+import DOMPurify from "dompurify";
 import PropTypes from "prop-types";
-import "./Info.css";
 import { useContext, useRef } from "react";
 import { CartContext } from "../../../context/CartProvider";
+import "./Info.css";
 
 const Info = ({ singleProduct }) => {
   const quantityRef = useRef();
@@ -46,7 +47,7 @@ const Info = ({ singleProduct }) => {
       </div>
       <div
         className="product-description"
-        dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(singleProduct.description) }}
       ></div>
       <form className="variations-form">
         <div className="variations">

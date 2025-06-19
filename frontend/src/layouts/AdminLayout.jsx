@@ -1,279 +1,208 @@
-import {
-  AppstoreOutlined,
-  BookOutlined,
-  DashboardOutlined,
-  FileTextOutlined,
-  LaptopOutlined,
-  LogoutOutlined,
-  MenuOutlined,
-  PictureOutlined,
-  RollbackOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-  StarOutlined,
-  TeamOutlined,
-  UserOutlined
-} from "@ant-design/icons";
-import PropTypes from "prop-types";
+import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./AdminLayout.css";
-
-const getUserRole = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  return user ? user.role : null;
-};
-
-const getUserInfo = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  return user || null;
-};
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userRole = getUserRole();
-  const userInfo = getUserInfo();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { user, logout, isAuthenticated, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
 
+  // Auth kontrolü - giriş yapmayan kullanıcıları login sayfasına yönlendir
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate("/admin", { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  // Loading durumu - auth kontrol edilirken loading göster
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px'
+      }}>
+        Yükleniyor...
+      </div>
+    );
+  }
+
+  // Giriş yapmamış kullanıcı - hiçbir şey render etme
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  // Menu items
   const menuItems = [
     {
       key: "dashboard",
-      icon: <DashboardOutlined />,
       label: "Dashboard",
       path: "/admin/dashboard",
-      roles: ["admin", "moderator"],
+      icon: "📊",
     },
     {
       key: "categories",
-      icon: <AppstoreOutlined />,
       label: "Kategoriler",
-      roles: ["admin"],
+      icon: "📁",
       children: [
-        {
-          key: "categories-list",
-          label: "Kategori Listesi",
-          path: "/admin/categories",
-        },
-        {
-          key: "categories-create",
-          label: "Yeni Kategori",
-          path: "/admin/categories/create",
-        },
+        { label: "Kategori Listesi", path: "/admin/categories" },
+        { label: "Yeni Kategori", path: "/admin/categories/create" },
       ],
     },
     {
       key: "blogs",
-      icon: <BookOutlined />,
       label: "Blog Yazıları",
-      roles: ["admin", "moderator"],
+      icon: "📝",
       children: [
-        {
-          key: "blogs-list",
-          label: "Blog Listesi",
-          path: "/admin/blogs",
-        },
-        {
-          key: "blogs-create",
-          label: "Yeni Blog",
-          path: "/admin/blogs/create",
-        },
+        { label: "Blog Listesi", path: "/admin/blogs" },
+        { label: "Yeni Blog", path: "/admin/blogs/create" },
       ],
     },
     {
       key: "features",
-      icon: <StarOutlined />,
       label: "Özellikler",
-      roles: ["admin"],
+      icon: "⭐",
       children: [
-        {
-          key: "features-list",
-          label: "Özellik Listesi",
-          path: "/admin/features",
-        },
-        {
-          key: "features-create",
-          label: "Yeni Özellik",
-          path: "/admin/features/create",
-        },
+        { label: "Özellik Listesi", path: "/admin/features" },
+        { label: "Yeni Özellik", path: "/admin/features/create" },
       ],
     },
     {
       key: "sliders",
-      icon: <PictureOutlined />,
       label: "Sliderlar",
-      roles: ["admin"],
+      icon: "🖼️",
       children: [
-        {
-          key: "sliders-list",
-          label: "Slider Listesi",
-          path: "/admin/sliders",
-        },
-        {
-          key: "sliders-create",
-          label: "Yeni Slider",
-          path: "/admin/sliders/create",
-        },
+        { label: "Slider Listesi", path: "/admin/sliders" },
+        { label: "Yeni Slider", path: "/admin/sliders/create" },
       ],
     },
     {
       key: "products",
-      icon: <LaptopOutlined />,
       label: "Ürünler",
-      roles: ["admin"],
+      icon: "💻",
       children: [
-        {
-          key: "products-list",
-          label: "Ürün Listesi",
-          path: "/admin/products",
-        },
-        {
-          key: "products-create",
-          label: "Yeni Ürün",
-          path: "/admin/products/create",
-        },
+        { label: "Ürün Listesi", path: "/admin/products" },
+        { label: "Yeni Ürün", path: "/admin/products/create" },
       ],
     },
     {
       key: "programs",
-      icon: <LaptopOutlined />,
       label: "Program Bilgileri",
-      roles: ["admin"],
+      icon: "📊",
       children: [
-        {
-          key: "programs-list",
-          label: "Program Listesi",
-          path: "/admin/programs",
-        },
-        {
-          key: "programs-create",
-          label: "Yeni Program",
-          path: "/admin/programs/create",
-        },
+        { label: "Program Listesi", path: "/admin/programs" },
+        { label: "Yeni Program", path: "/admin/programs/create" },
       ],
     },
     {
       key: "references",
-      icon: <TeamOutlined />,
       label: "Referanslar",
-      roles: ["admin"],
+      icon: "👥",
       children: [
-        {
-          key: "references-list",
-          label: "Referans Listesi",
-          path: "/admin/references",
-        },
-        {
-          key: "references-create",
-          label: "Yeni Referans",
-          path: "/admin/references/create",
-        },
+        { label: "Referans Listesi", path: "/admin/references" },
+        { label: "Yeni Referans", path: "/admin/references/create" },
       ],
     },
     {
       key: "pages",
-      icon: <FileTextOutlined />,
       label: "Sayfalar",
-      roles: ["admin"],
+      icon: "📄",
       children: [
-        {
-          key: "pages-list",
-          label: "Sayfa Listesi",
-          path: "/admin/pages",
-        },
-        {
-          key: "pages-create",
-          label: "Yeni Sayfa",
-          path: "/admin/pages/create",
-        },
+        { label: "Sayfa Listesi", path: "/admin/pages" },
+        { label: "Yeni Sayfa", path: "/admin/pages/create" },
       ],
     },
     {
       key: "users",
-      icon: <UserOutlined />,
       label: "Kullanıcılar",
-      roles: ["admin"],
+      icon: "👤",
       children: [
-        {
-          key: "users-list",
-          label: "Kullanıcı Listesi",
-          path: "/admin/users",
-        },
-        {
-          key: "users-create",
-          label: "Yeni Kullanıcı",
-          path: "/admin/users/create",
-        },
+        { label: "Kullanıcı Listesi", path: "/admin/users" },
+        { label: "Yeni Kullanıcı", path: "/admin/users/create" },
       ],
     },
     {
-      key: "orders",
-      icon: <ShoppingCartOutlined />,
-      label: "Siparişler",
-      path: "/admin/orders",
-      roles: ["admin"],
+      key: "quality",
+      label: "Kalite Yönetimi",
+      icon: "🔍",
+      children: [
+        { label: "Kalite Listesi", path: "/admin/quality-management" },
+        { label: "Yeni Kalite", path: "/admin/quality-management/create" },
+      ],
+    },
+    {
+      key: "jobs",
+      label: "İş İlanları",
+      icon: "💼",
+      children: [
+        { label: "İlan Listesi", path: "/admin/jobs" },
+        { label: "Yeni İlan", path: "/admin/jobs/create" },
+      ],
+    },
+    {
+      key: "job-applications",
+      label: "İş Başvuruları",
+      path: "/admin/job-applications",
+      icon: "📋",
+    },
+    {
+      key: "messages",
+      label: "Mesajlar",
+      path: "/admin/messages",
+      icon: "💬",
     },
     {
       key: "settings",
-      icon: <SettingOutlined />,
       label: "Ayarlar",
-      roles: ["admin"],
-      children: [
-        {
-          key: "settings-homepage",
-          label: "Anasayfa Ayarları",
-          path: "/admin/settings/homepage",
-        },
-      ],
+      path: "/admin/settings",
+      icon: "⚙️",
     },
   ];
 
-  const filteredMenuItems = menuItems.filter(item =>
-    !item.roles || item.roles.includes(userRole)
-  );
+  const getPageTitle = () => {
+    const path = location.pathname;
 
-  const getActiveKey = () => {
-    const currentPath = location.pathname;
-    for (const item of filteredMenuItems) {
-      if (item.children) {
-        for (const child of item.children) {
-          if (child.path === currentPath) {
-            return child.key;
-          }
-        }
-      } else {
-        if (item.path === currentPath) {
-          return item.key;
-        }
-      }
-    }
-    return "dashboard";
+    if (path === "/admin/dashboard") return "Dashboard";
+    if (path.includes("/admin/categories")) return "Kategoriler";
+    if (path.includes("/admin/blogs")) return "Blog Yazıları";
+    if (path.includes("/admin/features")) return "Özellikler";
+    if (path.includes("/admin/sliders")) return "Sliderlar";
+    if (path.includes("/admin/products")) return "Ürünler";
+    if (path.includes("/admin/programs")) return "Program Bilgileri";
+    if (path.includes("/admin/references")) return "Referanslar";
+    if (path.includes("/admin/pages")) return "Sayfalar";
+    if (path.includes("/admin/users")) return "Kullanıcılar";
+    if (path.includes("/admin/quality-management")) return "Kalite Yönetimi";
+    if (path.includes("/admin/jobs")) return "İş İlanları";
+    if (path.includes("/admin/job-applications")) return "İş Başvuruları";
+    if (path.includes("/admin/messages")) return "Mesajlar";
+    if (path.includes("/admin/settings")) return "Ayarlar";
+
+    return "Yönetim Paneli";
   };
 
-  const getPageTitle = () => {
-    const currentPath = location.pathname;
-    for (const item of filteredMenuItems) {
-      if (item.children) {
-        for (const child of item.children) {
-          if (child.path === currentPath) {
-            return child.label;
-          }
-        }
-      } else {
-        if (item.path === currentPath) {
-          return item.label;
-        }
-      }
+  const isActive = (path) => {
+    if (!path) return false;
+    return location.pathname === path || location.pathname.startsWith(path + "/");
+  };
+
+  const isMenuActive = (item) => {
+    if (item.path) return isActive(item.path);
+    if (item.children) {
+      return item.children.some(child => isActive(child.path));
     }
-    return "Dashboard";
+    return false;
   };
 
   const handleMenuClick = (path) => {
-    navigate(path);
-    // Mobile'da menu'ye tıkladıktan sonra sidebar'ı kapat
-    if (window.innerWidth <= 1024) {
+    if (path) {
+      navigate(path);
       setSidebarOpen(false);
     }
   };
@@ -282,166 +211,164 @@ const AdminLayout = ({ children }) => {
     setActiveSubmenu(activeSubmenu === key ? null : key);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/admin");
+  const handleSubmenuItemClick = (path) => {
+    navigate(path);
+    setSidebarOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      message.success("Başarıyla çıkış yapıldı.");
+      navigate("/admin", { replace: true });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout fails, redirect to login
+      navigate("/admin", { replace: true });
+    }
   };
 
   const handleBackToSite = () => {
-    window.location.href = "/";
+    navigate("/");
   };
 
   const toggleSidebar = () => {
-    if (window.innerWidth <= 1024) {
-      setSidebarOpen(!sidebarOpen);
-    } else {
-      setSidebarCollapsed(!sidebarCollapsed);
-    }
+    setSidebarOpen(!sidebarOpen);
   };
 
   const closeSidebar = () => {
     setSidebarOpen(false);
   };
 
+  // Auto-open submenus based on current path
   useEffect(() => {
-    // Active submenu'yu otomatik aç
     const currentPath = location.pathname;
-    for (const item of filteredMenuItems) {
+
+    menuItems.forEach(item => {
       if (item.children) {
-        for (const child of item.children) {
-          if (child.path === currentPath) {
-            setActiveSubmenu(item.key);
-            break;
-          }
+        const hasActiveChild = item.children.some(child =>
+          currentPath === child.path || currentPath.startsWith(child.path + "/")
+        );
+        if (hasActiveChild) {
+          setActiveSubmenu(item.key);
         }
       }
-    }
+    });
   }, [location.pathname]);
 
-  // Window resize listener
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setSidebarOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  if (userRole !== "admin") {
-    return (window.location.href = "/");
-  }
-
   return (
-    <div className="custom-admin-layout">
-      {/* Mobile Overlay */}
-      {sidebarOpen && <div className="sidebar-overlay active" onClick={closeSidebar}></div>}
+    <div className="admin-layout">
+      {/* Header */}
+      <header className="admin-header">
+        <div className="container">
+          <div className="header-content">
+            {/* Left side */}
+            <div className="header-left">
+              <button
+                className={`mobile-menu-btn ${sidebarOpen ? 'active' : ''}`}
+                onClick={toggleSidebar}
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
 
-      {/* Sidebar */}
-      <div className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${sidebarOpen ? 'open' : ''}`}>
-        {/* Logo */}
-        <div className="admin-logo-container">
-          <div className="admin-logo">
-            <span className="logo-main">standart</span>
-            <span className="logo-sub">KALIP</span>
-          </div>
-          <div className="admin-subtitle">YÖNETİM PANELİ</div>
-        </div>
-
-        {/* Menu */}
-        <nav className="admin-nav">
-          {filteredMenuItems.map((item) => (
-            <div key={item.key} className="menu-item-container">
-              {item.children ? (
-                <div>
-                  <div
-                    className={`menu-item has-children ${activeSubmenu === item.key ? 'active' : ''}`}
-                    onClick={() => handleSubmenuToggle(item.key)}
-                  >
-                    <span className="menu-icon">{item.icon}</span>
-                    <span className="menu-label">{item.label}</span>
-                    <span className="submenu-arrow">
-                      <i className={`arrow ${activeSubmenu === item.key ? 'rotated' : ''}`}>▼</i>
-                    </span>
-                  </div>
-                  <div className={`submenu ${activeSubmenu === item.key ? 'open' : ''}`}>
-                    {item.children.map((child) => (
-                      <div
-                        key={child.key}
-                        className={`submenu-item ${getActiveKey() === child.key ? 'active' : ''}`}
-                        onClick={() => handleMenuClick(child.path)}
-                      >
-                        <span className="submenu-label">{child.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className={`menu-item ${getActiveKey() === item.key ? 'active' : ''}`}
-                  onClick={() => handleMenuClick(item.path)}
-                >
-                  <span className="menu-icon">{item.icon}</span>
-                  <span className="menu-label">{item.label}</span>
-                </div>
-              )}
+              <div className="logo" onClick={() => navigate('/admin/dashboard')}>
+                <div className="logo-main">standart</div>
+                <div className="logo-sub">ADMIN</div>
+              </div>
             </div>
-          ))}
-        </nav>
 
-        {/* Bottom Actions */}
-        <div className="admin-sidebar-footer">
-          <div className="menu-item" onClick={handleBackToSite}>
-            <span className="menu-icon"><RollbackOutlined /></span>
-            <span className="menu-label">Ana Siteye Dön</span>
-          </div>
-          <div className="menu-item logout" onClick={handleLogout}>
-            <span className="menu-icon"><LogoutOutlined /></span>
-            <span className="menu-label">Çıkış Yap</span>
+            {/* Center - Page title */}
+            <div className="header-center">
+              <h1 className="page-title">{getPageTitle()}</h1>
+            </div>
+
+            {/* Right side - User info */}
+            <div className="header-right">
+              <div className="user-info">
+                <div className="user-avatar">
+                  <span>{user?.name?.charAt(0) || 'A'}</span>
+                </div>
+                <div className="user-details">
+                  <div className="user-name">{user?.name || 'Admin'}</div>
+                  <div className="user-role">{user?.role || 'Yönetici'}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Mobile Sidebar */}
+        <div className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-content">
+            {/* Navigation */}
+            <nav className="sidebar-nav">
+              {menuItems.map((item) => (
+                <div key={item.key} className="menu-item-container">
+                  {item.children ? (
+                    <div className="dropdown-menu-item">
+                      <div
+                        className={`menu-item ${isMenuActive(item) ? 'active' : ''}`}
+                        onClick={() => handleSubmenuToggle(item.key)}
+                      >
+                        <span className="menu-icon">{item.icon}</span>
+                        <span className="menu-label">{item.label}</span>
+                        <span className={`arrow ${activeSubmenu === item.key ? 'rotated' : ''}`}>
+                          ▼
+                        </span>
+                      </div>
+                      <div className={`submenu ${activeSubmenu === item.key ? 'open' : ''}`}>
+                        {item.children.map((child, index) => (
+                          <div
+                            key={index}
+                            className={`submenu-item ${isActive(child.path) ? 'active' : ''}`}
+                            onClick={() => handleSubmenuItemClick(child.path)}
+                          >
+                            {child.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`menu-item ${isActive(item.path) ? 'active' : ''}`}
+                      onClick={() => handleMenuClick(item.path)}
+                    >
+                      <span className="menu-icon">{item.icon}</span>
+                      <span className="menu-label">{item.label}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            {/* Footer Actions */}
+            <div className="sidebar-footer">
+              <div className="menu-item" onClick={handleBackToSite}>
+                <span className="menu-icon">🌐</span>
+                <span className="menu-label">Siteye Git</span>
+              </div>
+              <div className="menu-item logout" onClick={handleLogout}>
+                <span className="menu-icon">🚪</span>
+                <span className="menu-label">Çıkış Yap</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Overlay */}
+      {sidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar}></div>}
 
       {/* Main Content */}
-      <div className="admin-main-content">
-        {/* Header */}
-        <header className="admin-header">
-          <div className="admin-header-left">
-            <button
-              className="sidebar-toggle"
-              onClick={toggleSidebar}
-            >
-              <MenuOutlined />
-            </button>
-            <h1 className="page-title">{getPageTitle()}</h1>
-          </div>
-
-          <div className="admin-header-right">
-            <div className="admin-user-info">
-              <div className="user-avatar">
-                <img src={userInfo?.avatar} alt="Admin" />
-              </div>
-              <div className="user-details">
-                <span className="user-name">{userInfo?.username}</span>
-                <span className="user-role">Yönetici</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Area */}
-        <main className="admin-content">
+      <main className="admin-content">
+        <div className="container">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
-};
-
-AdminLayout.propTypes = {
-  children: PropTypes.node,
 };
 
 export default AdminLayout;

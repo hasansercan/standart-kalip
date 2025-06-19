@@ -1,24 +1,41 @@
 {
     "name": "standart-kalip",
     "version": "1.0.0",
+    "description": "Standart Kalıp E-Commerce Application",
+    "main": "backend/server.js",
     "private": true,
     "scripts": {
-        "start": "npm run start --prefix backend",
-        "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run start --prefix backend\"",
-        "build": "npm run build --prefix frontend",
-        "netlify-build": "cd frontend && npm ci && npm run build",
+        "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+        "dev": "concurrently --kill-others --prefix \"[{name}]\" --names \"Backend,Frontend\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "build": "npm run install:all && npm run build:frontend",
+        "build:frontend": "npm run build --prefix frontend",
+        "build:production": "npm run install:all && npm run build:frontend && npm run seed",
+        "dev:backend": "nodemon backend/server.js",
+        "dev:frontend": "npm run dev --prefix frontend",
+        "backend": "node backend/server.js",
+        "frontend": "npm run dev --prefix frontend",
+        "seed": "node backend/seeds/categorySeeds.js && node backend/seeds/featureSeeds.js && node backend/seeds/sliderSeeds.js && node backend/seeds/blogSeeds.js && node backend/seeds/referenceSeeds.js && node backend/seeds/programSeeds.js",
         "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend",
         "clean": "npm run clean --prefix frontend && npm run clean --prefix backend && rm -rf node_modules",
-        "backend": "npm run start --prefix backend",
-        "frontend": "npm run dev --prefix frontend"
+        "stop": "taskkill /f /im node.exe 2>nul || echo \"No Node.js processes to kill\"",
+        "restart": "npm run stop && npm run dev"
     },
     "engines": {
         "node": ">=18.0.0",
         "npm": ">=8.0.0"
     },
+    "keywords": [
+        "e-commerce",
+        "api",
+        "nodejs",
+        "express",
+        "mongodb"
+    ],
+    "author": "Standart Kalıp",
+    "license": "ISC",
     "dependencies": {
-        "serverless-http": "^3.2.0",
         "bcryptjs": "^2.4.3",
+        "cloudinary": "^2.6.1",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
@@ -29,6 +46,7 @@
         "stripe": "^13.8.0"
     },
     "devDependencies": {
-        "concurrently": "^8.2.2"
+        "concurrently": "^8.2.2",
+        "nodemon": "^3.1.10"
     }
 }

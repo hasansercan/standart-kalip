@@ -1,20 +1,21 @@
 import {
-  DollarOutlined,
-  EyeOutlined,
+  AppstoreOutlined,
+  ContactsOutlined,
+  FileTextOutlined,
   RiseOutlined,
-  ShoppingCartOutlined,
   ShoppingOutlined,
   TeamOutlined,
-  TrophyOutlined,
-  UserOutlined
+  TrophyOutlined
 } from "@ant-design/icons";
-import { Button, Card, Col, Progress, Row } from "antd";
+import { Button, Card, Col, Progress, Row, Spin, message } from "antd";
 import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
   CartesianGrid,
   Cell,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -22,69 +23,190 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { buildApiUrl } from "../../config/apiConfig";
 import "./DashboardPage.css";
 
 const DashboardPage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState({
+    overview: {},
+    recent: {},
+    monthly: [],
+    applicationStatus: {}
+  });
+  const [weeklyTrends, setWeeklyTrends] = useState([]);
+  const [categoryDistribution, setCategoryDistribution] = useState({
+    products: [],
+    blogs: []
+  });
 
-  // Mock data - bu veriler gerçek API'den gelecek
-  const statsData = [
-    {
-      title: "Toplam Ziyaretçi",
-      value: "12.847",
-      change: "+12.5%",
-      trend: "up",
-      icon: <EyeOutlined />,
-      color: "#8B1538"
-    },
-    {
-      title: "Toplam Satış",
-      value: "₺847.250",
-      change: "+8.2%",
-      trend: "up",
-      icon: <DollarOutlined />,
-      color: "#059669"
-    },
-    {
-      title: "Yeni Siparişler",
-      value: "127",
-      change: "-2.1%",
-      trend: "down",
-      icon: <ShoppingCartOutlined />,
-      color: "#DC2626"
-    },
-    {
-      title: "Aktif Müşteriler",
-      value: "2.847",
-      change: "+15.3%",
-      trend: "up",
-      icon: <TeamOutlined />,
-      color: "#7C3AED"
+  // API'den dashboard verilerini çek
+  useEffect(() => {
+    fetchDashboardData();
+    fetchWeeklyTrends();
+    fetchCategoryDistribution();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch(buildApiUrl('/dashboard/stats'));
+      if (response.ok) {
+        const data = await response.json();
+        setDashboardData(data);
+      } else {
+        message.error('Dashboard verileri yüklenirken hata oluştu');
+      }
+    } catch (error) {
+      console.error('Dashboard data fetch error:', error);
+      message.error('Dashboard verileri yüklenirken hata oluştu');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const salesData = [
-    { month: "Ocak", sales: 120000, orders: 45, customers: 25 },
-    { month: "Şubat", sales: 150000, orders: 52, customers: 32 },
-    { month: "Mart", sales: 180000, orders: 48, customers: 28 },
-    { month: "Nisan", sales: 220000, orders: 65, customers: 45 },
-    { month: "Mayıs", sales: 190000, orders: 58, customers: 38 },
-    { month: "Haziran", sales: 280000, orders: 72, customers: 52 },
-  ];
+  const fetchWeeklyTrends = async () => {
+    try {
+      const response = await fetch(buildApiUrl('/dashboard/weekly-trends'));
+      if (response.ok) {
+        const data = await response.json();
+        setWeeklyTrends(data);
+      }
+    } catch (error) {
+      console.error('Weekly trends fetch error:', error);
+    }
+  };
 
-  const categoryData = [
-    { name: "Kalıp Üretimi", value: 45, color: "#8B1538" },
-    { name: "Tasarım Hizmetleri", value: 25, color: "#059669" },
-    { name: "Teknik Danışmanlık", value: 20, color: "#7C3AED" },
-    { name: "Diğer", value: 10, color: "#DC2626" }
-  ];
+  const fetchCategoryDistribution = async () => {
+    try {
+      const response = await fetch(buildApiUrl('/dashboard/category-distribution'));
+      if (response.ok) {
+        const data = await response.json();
+        setCategoryDistribution(data);
+      }
+    } catch (error) {
+      console.error('Category distribution fetch error:', error);
+    }
+  };
 
-  const recentOrders = [
-    { id: "#12847", customer: "Acme Şirketi", product: "Özel Kalıp", amount: "₺15.000", status: "Tamamlandı" },
-    { id: "#12846", customer: "Beta Ltd.", product: "Tasarım Hizmeti", amount: "₺8.500", status: "İşlemde" },
-    { id: "#12845", customer: "Gamma A.Ş.", product: "Teknik Danışmanlık", amount: "₺3.200", status: "Bekliyor" },
-    { id: "#12844", customer: "Delta Corp", product: "Kalıp Revizyon", amount: "₺12.800", status: "Tamamlandı" }
-  ];
+  // Dinamik istatistik kartları
+  const getStatsData = () => {
+    const { overview } = dashboardData;
+
+    return [
+      {
+        title: "Toplam Ürün",
+        value: overview.totalProducts || 0,
+        change: "+5.2%",
+        trend: "up",
+        icon: <AppstoreOutlined />,
+        color: "#8B1538"
+      },
+      {
+        title: "Toplam Blog",
+        value: overview.totalBlogs || 0,
+        change: "+8.1%",
+        trend: "up",
+        icon: <FileTextOutlined />,
+        color: "#059669"
+      },
+      {
+        title: "Aktif İş İlanları",
+        value: overview.activeJobs || 0,
+        change: "+12.3%",
+        trend: "up",
+        icon: <TeamOutlined />,
+        color: "#DC2626"
+      },
+      {
+        title: "Bekleyen Başvurular",
+        value: overview.pendingApplications || 0,
+        change: "+15.7%",
+        trend: "up",
+        icon: <ContactsOutlined />,
+        color: "#7C3AED"
+      }
+    ];
+  };
+
+  // Başvuru durumu dağılımı için pie chart verisi
+  const getApplicationStatusData = () => {
+    const { applicationStatus } = dashboardData;
+    const statusColors = {
+      pending: "#FFA500",
+      reviewing: "#1890FF",
+      interview: "#722ED1",
+      accepted: "#52C41A",
+      rejected: "#FF4D4F"
+    };
+
+    const statusLabels = {
+      pending: "Bekleyen",
+      reviewing: "İnceleniyor",
+      interview: "Mülakat",
+      accepted: "Kabul",
+      rejected: "Red"
+    };
+
+    return Object.entries(applicationStatus).map(([status, count]) => ({
+      name: statusLabels[status] || status,
+      value: count,
+      color: statusColors[status] || "#8B1538"
+    }));
+  };
+
+  // Son aktiviteler listesi
+  const getRecentActivities = () => {
+    const { recent } = dashboardData;
+    const activities = [];
+
+    // Son başvurular
+    if (recent.applications) {
+      recent.applications.forEach(app => {
+        activities.push({
+          id: app._id,
+          type: 'application',
+          title: `${app.firstName} ${app.lastName}`,
+          description: `${app.jobTitle} pozisyonuna başvurdu`,
+          time: new Date(app.appliedAt).toLocaleDateString('tr-TR'),
+          status: app.status
+        });
+      });
+    }
+
+    // Son iletişim mesajları
+    if (recent.contacts) {
+      recent.contacts.forEach(contact => {
+        activities.push({
+          id: contact._id,
+          type: 'contact',
+          title: contact.name,
+          description: contact.subject,
+          time: new Date(contact.createdAt).toLocaleDateString('tr-TR'),
+          status: contact.isRead ? 'read' : 'unread'
+        });
+      });
+    }
+
+    // Son bloglar
+    if (recent.blogs) {
+      recent.blogs.forEach(blog => {
+        activities.push({
+          id: blog._id,
+          type: 'blog',
+          title: blog.title,
+          description: 'Yeni blog yazısı yayınlandı',
+          time: new Date(blog.createdAt).toLocaleDateString('tr-TR'),
+          status: 'published'
+        });
+      });
+    }
+
+    // Tarihe göre sırala ve ilk 10'unu al
+    return activities
+      .sort((a, b) => new Date(b.time) - new Date(a.time))
+      .slice(0, 10);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -110,6 +232,18 @@ const DashboardPage = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  const statsData = getStatsData();
+  const applicationStatusData = getApplicationStatusData();
+  const recentActivities = getRecentActivities();
+
   return (
     <div className="dashboard-container">
       {/* Welcome Section */}
@@ -124,10 +258,10 @@ const DashboardPage = () => {
         </div>
         <div className="welcome-actions">
           <Button type="primary" size="large" className="primary-button">
-            <ShoppingOutlined /> Yeni Sipariş
+            <ShoppingOutlined /> Yeni Ürün
           </Button>
           <Button size="large" className="secondary-button">
-            <UserOutlined /> Müşteri Ekle
+            <FileTextOutlined /> Blog Ekle
           </Button>
         </div>
       </div>
@@ -157,11 +291,11 @@ const DashboardPage = () => {
       {/* Charts Section */}
       <Row gutter={[24, 24]} className="charts-row">
         <Col xs={24} lg={16}>
-          <Card title="Satış Analizi" className="chart-card">
+          <Card title="Aylık Aktivite Analizi" className="chart-card">
             <ResponsiveContainer width="100%" height={350}>
-              <AreaChart data={salesData}>
+              <AreaChart data={dashboardData.monthly}>
                 <defs>
-                  <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8B1538" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#8B1538" stopOpacity={0.1} />
                   </linearGradient>
@@ -179,10 +313,10 @@ const DashboardPage = () => {
                 />
                 <Area
                   type="monotone"
-                  dataKey="sales"
+                  dataKey="total"
                   stroke="#8B1538"
                   strokeWidth={3}
-                  fill="url(#salesGradient)"
+                  fill="url(#totalGradient)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -190,18 +324,18 @@ const DashboardPage = () => {
         </Col>
 
         <Col xs={24} lg={8}>
-          <Card title="Hizmet Dağılımı" className="chart-card">
+          <Card title="Başvuru Durumu Dağılımı" className="chart-card">
             <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
-                  data={categoryData}
+                  data={applicationStatusData}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
-                  {categoryData.map((entry, index) => (
+                  {applicationStatusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -212,79 +346,103 @@ const DashboardPage = () => {
         </Col>
       </Row>
 
-      {/* Recent Orders and Performance */}
+      {/* Weekly Trends */}
+      {weeklyTrends.length > 0 && (
+        <Row gutter={[24, 24]} className="trends-row">
+          <Col xs={24}>
+            <Card title="Haftalık Trend Analizi" className="chart-card">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={weeklyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="day" stroke="#666" />
+                  <YAxis stroke="#666" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="applications" stroke="#8B1538" strokeWidth={2} name="Başvurular" />
+                  <Line type="monotone" dataKey="contacts" stroke="#059669" strokeWidth={2} name="İletişim" />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+        </Row>
+      )}
+
+      {/* Recent Activities and Performance */}
       <Row gutter={[24, 24]} className="bottom-section">
         <Col xs={24} lg={14}>
-          <Card title="Son Siparişler" className="table-card">
-            <div className="recent-orders">
-              {recentOrders.map((order) => (
-                <div key={order.id} className="order-item">
-                  <div className="order-info">
-                    <h4>{order.id}</h4>
-                    <p>{order.customer}</p>
-                    <span className="product-name">{order.product}</span>
+          <Card title="Son Aktiviteler" className="table-card">
+            <div className="recent-activities">
+              {recentActivities.map((activity) => (
+                <div key={`${activity.type}-${activity.id}`} className="activity-item">
+                  <div className="activity-info">
+                    <h4>{activity.title}</h4>
+                    <p>{activity.description}</p>
+                    <span className="activity-time">{activity.time}</span>
                   </div>
-                  <div className="order-amount">
-                    <strong>{order.amount}</strong>
-                  </div>
-                  <div className="order-status">
-                    <span className={`status-badge ${order.status.toLowerCase()}`}>
-                      {order.status}
+                  <div className="activity-status">
+                    <span className={`status-badge ${activity.status}`}>
+                      {activity.status === 'pending' && 'Bekliyor'}
+                      {activity.status === 'reviewing' && 'İnceleniyor'}
+                      {activity.status === 'interview' && 'Mülakat'}
+                      {activity.status === 'accepted' && 'Kabul'}
+                      {activity.status === 'rejected' && 'Red'}
+                      {activity.status === 'read' && 'Okundu'}
+                      {activity.status === 'unread' && 'Okunmadı'}
+                      {activity.status === 'published' && 'Yayında'}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
             <div className="card-footer">
-              <Button type="link">Tüm Siparişleri Görüntüle →</Button>
+              <Button type="link">Tüm Aktiviteleri Görüntüle →</Button>
             </div>
           </Card>
         </Col>
 
         <Col xs={24} lg={10}>
-          <Card title="Performans Özeti" className="performance-card">
+          <Card title="Sistem Özeti" className="performance-card">
             <div className="performance-item">
               <div className="performance-info">
-                <span>Bu Ay Hedef</span>
-                <span className="performance-value">₺500.000</span>
+                <span>Toplam İş İlanları</span>
+                <span className="performance-value">{dashboardData.overview.totalJobs || 0}</span>
               </div>
               <Progress
-                percent={68}
+                percent={Math.min(100, (dashboardData.overview.activeJobs / Math.max(1, dashboardData.overview.totalJobs)) * 100)}
                 strokeColor="#8B1538"
                 trailColor="#f0f0f0"
-                strokeWidth={8}
+                size={8}
               />
             </div>
 
             <div className="performance-item">
               <div className="performance-info">
-                <span>Müşteri Memnuniyeti</span>
-                <span className="performance-value">94%</span>
+                <span>Başvuru Oranı</span>
+                <span className="performance-value">{dashboardData.overview.totalJobApplications || 0}</span>
               </div>
               <Progress
-                percent={94}
+                percent={Math.min(100, (dashboardData.overview.totalJobApplications / Math.max(1, dashboardData.overview.totalJobs * 10)) * 100)}
                 strokeColor="#059669"
                 trailColor="#f0f0f0"
-                strokeWidth={8}
+                size={8}
               />
             </div>
 
             <div className="performance-item">
               <div className="performance-info">
-                <span>Proje Tamamlama</span>
-                <span className="performance-value">86%</span>
+                <span>İletişim Mesajları</span>
+                <span className="performance-value">{dashboardData.overview.totalContacts || 0}</span>
               </div>
               <Progress
-                percent={86}
+                percent={Math.min(100, ((dashboardData.overview.totalContacts - dashboardData.overview.unreadContacts) / Math.max(1, dashboardData.overview.totalContacts)) * 100)}
                 strokeColor="#7C3AED"
                 trailColor="#f0f0f0"
-                strokeWidth={8}
+                size={8}
               />
             </div>
 
             <div className="achievement-badge">
               <TrophyOutlined />
-              <span>Bu ay hedefin %68'ine ulaştınız!</span>
+              <span>Sistem başarıyla çalışıyor! 🎉</span>
             </div>
           </Card>
         </Col>

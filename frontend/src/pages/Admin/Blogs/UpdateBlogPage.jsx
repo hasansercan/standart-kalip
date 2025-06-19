@@ -375,7 +375,7 @@ const UpdateBlogPage = () => {
                 </Form.Item>
             </Form>
 
-            <style jsx>{`
+            <style>{`
                 .blog-image-uploader .ant-upload {
                     width: 100% !important;
                     height: 200px !important;

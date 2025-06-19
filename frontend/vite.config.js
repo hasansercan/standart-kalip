@@ -31,6 +31,6 @@ export default defineConfig({
     host: true
   },
   define: {
-    __API_URL__: JSON.stringify(process.env.VITE_API_BASE_URL || '/.netlify/functions/api')
+    __API_URL__: JSON.stringify(process.env.VITE_API_BASE_URL || 'http://localhost:5000/api')
   }
 })

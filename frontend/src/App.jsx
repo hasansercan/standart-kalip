@@ -28,7 +28,17 @@ import DashboardPage from "./pages/Admin/DashboardPage";
 import CreateFeaturePage from "./pages/Admin/Features/CreateFeaturePage";
 import FeaturePage from "./pages/Admin/Features/FeaturePage";
 import UpdateFeaturePage from "./pages/Admin/Features/UpdateFeaturePage";
+import JobApplicationPage from "./pages/Admin/JobApplications/JobApplicationPage";
+import CreateJobPage from "./pages/Admin/Jobs/CreateJobPage";
+import JobPage from "./pages/Admin/Jobs/JobPage";
+import UpdateJobPage from "./pages/Admin/Jobs/UpdateJobPage";
+import MessagePage from "./pages/Admin/Messages/MessagePage";
 import OrderPage from "./pages/Admin/OrderPage";
+
+// Quality Management Pages
+import CreateQualityManagementPage from "./pages/Admin/QualityManagement/CreateQualityManagementPage";
+import QualityManagementPage from "./pages/Admin/QualityManagement/QualityManagementPage";
+
 import CreatePagePage from "./pages/Admin/Pages/CreatePagePage";
 import PagePage from "./pages/Admin/Pages/PagePage";
 import UpdatePagePage from "./pages/Admin/Pages/UpdatePagePage";
@@ -42,6 +52,7 @@ import CreateReferencePage from "./pages/Admin/References/CreateReferencePage";
 import ReferencePage from "./pages/Admin/References/ReferencePage";
 import UpdateReferencePage from "./pages/Admin/References/UpdateReferencePage";
 import HomepageSettingsPage from "./pages/Admin/Settings/HomepageSettingsPage";
+import SettingsPage from "./pages/Admin/Settings/SettingsPage";
 import CreateSliderPage from "./pages/Admin/Sliders/CreateSliderPage";
 import SliderPage from "./pages/Admin/Sliders/SliderPage";
 import UpdateSliderPage from "./pages/Admin/Sliders/UpdateSliderPage";
@@ -75,38 +86,45 @@ function App() {
       <Route path="/blog/:slug" element={<BlogDetailsPage />} />
       <Route path="/success" element={<Success />} />
       <Route path="/admin" element={<AdminLoginPage />} />
-      <Route path="/admin/*">
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="users" element={<UserPage />} />
-        <Route path="users/create" element={<CreateUserPage />} />
-        <Route path="users/update/:userId" element={<UpdateUserPage />} />
-        <Route path="categories" element={<CategoryPage />} />
-        <Route path="categories/create" element={<CreateCategoryPage />} />
-        <Route path="categories/update/:id" element={<UpdateCategoryPage />} />
-        <Route path="blogs" element={<AdminBlogPage />} />
-        <Route path="blogs/create" element={<CreateBlogPage />} />
-        <Route path="blogs/update/:id" element={<UpdateBlogPage />} />
-        <Route path="features" element={<FeaturePage />} />
-        <Route path="features/create" element={<CreateFeaturePage />} />
-        <Route path="features/update/:id" element={<UpdateFeaturePage />} />
-        <Route path="sliders" element={<SliderPage />} />
-        <Route path="sliders/create" element={<CreateSliderPage />} />
-        <Route path="sliders/update/:id" element={<UpdateSliderPage />} />
-        <Route path="products" element={<ProductPage />} />
-        <Route path="products/create" element={<CreateProductPage />} />
-        <Route path="products/update/:id" element={<UpdateProductPage />} />
-        <Route path="programs" element={<ProgramPage />} />
-        <Route path="programs/create" element={<CreateProgramPage />} />
-        <Route path="programs/update/:programId" element={<UpdateProgramPage />} />
-        <Route path="references" element={<ReferencePage />} />
-        <Route path="references/create" element={<CreateReferencePage />} />
-        <Route path="references/update/:referenceId" element={<UpdateReferencePage />} />
-        <Route path="pages" element={<PagePage />} />
-        <Route path="pages/create" element={<CreatePagePage />} />
-        <Route path="pages/update/:id" element={<UpdatePagePage />} />
-        <Route path="settings/homepage" element={<HomepageSettingsPage />} />
-        <Route path="orders" element={<OrderPage />} />
-      </Route>
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin/dashboard" element={<DashboardPage />} />
+      <Route path="/admin/users" element={<UserPage />} />
+      <Route path="/admin/users/create" element={<CreateUserPage />} />
+      <Route path="/admin/users/update/:userId" element={<UpdateUserPage />} />
+      <Route path="/admin/categories" element={<CategoryPage />} />
+      <Route path="/admin/categories/create" element={<CreateCategoryPage />} />
+      <Route path="/admin/categories/update/:id" element={<UpdateCategoryPage />} />
+      <Route path="/admin/blogs" element={<AdminBlogPage />} />
+      <Route path="/admin/blogs/create" element={<CreateBlogPage />} />
+      <Route path="/admin/blogs/update/:id" element={<UpdateBlogPage />} />
+      <Route path="/admin/features" element={<FeaturePage />} />
+      <Route path="/admin/features/create" element={<CreateFeaturePage />} />
+      <Route path="/admin/features/update/:id" element={<UpdateFeaturePage />} />
+      <Route path="/admin/sliders" element={<SliderPage />} />
+      <Route path="/admin/sliders/create" element={<CreateSliderPage />} />
+      <Route path="/admin/sliders/update/:id" element={<UpdateSliderPage />} />
+      <Route path="/admin/products" element={<ProductPage />} />
+      <Route path="/admin/products/create" element={<CreateProductPage />} />
+      <Route path="/admin/products/update/:id" element={<UpdateProductPage />} />
+      <Route path="/admin/programs" element={<ProgramPage />} />
+      <Route path="/admin/programs/create" element={<CreateProgramPage />} />
+      <Route path="/admin/programs/update/:programId" element={<UpdateProgramPage />} />
+      <Route path="/admin/references" element={<ReferencePage />} />
+      <Route path="/admin/references/create" element={<CreateReferencePage />} />
+      <Route path="/admin/references/update/:referenceId" element={<UpdateReferencePage />} />
+      <Route path="/admin/pages" element={<PagePage />} />
+      <Route path="/admin/pages/create" element={<CreatePagePage />} />
+      <Route path="/admin/pages/update/:id" element={<UpdatePagePage />} />
+      <Route path="/admin/quality-management" element={<QualityManagementPage />} />
+      <Route path="/admin/quality-management/create" element={<CreateQualityManagementPage />} />
+      <Route path="/admin/settings" element={<SettingsPage />} />
+      <Route path="/admin/settings/homepage" element={<HomepageSettingsPage />} />
+      <Route path="/admin/orders" element={<OrderPage />} />
+      <Route path="/admin/messages" element={<MessagePage />} />
+      <Route path="/admin/jobs" element={<JobPage />} />
+      <Route path="/admin/jobs/create" element={<CreateJobPage />} />
+      <Route path="/admin/jobs/update/:id" element={<UpdateJobPage />} />
+      <Route path="/admin/job-applications" element={<JobApplicationPage />} />
     </Routes>
   );
 }

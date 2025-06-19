@@ -1,105 +1,50 @@
-import React, { useState } from "react";
+import { message, Spin } from "antd";
+import React, { useEffect, useState } from "react";
+import { buildApiUrl } from "../config/apiConfig";
 import "./ServicesPage.css";
 
 const ServicesPage = () => {
-    // Admin panelinden yönetilebilir kalite kategorileri
-    const [qualityCategories] = useState([
-        {
-            id: 1,
-            name: "Kalite Politikası",
-            isActive: true,
-            content: {
-                title: "Kalite Politikamız",
-                description: "Kalıp Standart Elemanları, Kalıp, Özel Amaçlı Makine ve Aparat Tasarımı, İmalatı, Tedarığı ve Satışı'nın yapılması konularında faaliyet gösteren firmamız kuruluşun amaç ve bağlamına uygun ve stratejik yönünü destekleyecek şekilde Kalite Yönetim Sistemini en üst düzeye ulaştırabilmek için aşağıdaki hususlar doğrultusunda politikasını belirlemiştir;",
-                points: [
-                    "Müşterilerimizin ihtiyaç ve beklentilerinin en iyi kalitede, en uygun fiyat ve sürede karşılanması,",
-                    "Çalışanlarımızın eğitim ve motivasyonunun sağlanması,",
-                    "Tüm çalışanlarımızın katılımı,",
-                    "Tedarikçilerimizle işbirliği,",
-                    "Kaynaklarımızın verimli yönetimi,",
-                    "Ekip çalışması yaklaşımı,",
-                    "ISO 9001:2015 Kalite Yönetim Sistemi kapsamındaki uygulanabilir olarak belirlenen şartları yerine getirme ve sistemini sürekli olarak iyileştirme"
-                ]
-            }
-        },
-        {
-            id: 2,
-            name: "Kalite Sertifikaları",
-            isActive: false,
-            content: {
-                title: "Kalite Sertifikalarımız",
-                description: "Firmamız kalite yönetim sistemleri ve ürün standartları konusunda uluslararası geçerliliğe sahip sertifikalara sahiptir.",
-                points: [
-                    "ISO 9001:2015 Kalite Yönetim Sistemi Sertifikası",
-                    "ISO 14001:2015 Çevre Yönetim Sistemi Sertifikası",
-                    "OHSAS 18001 İş Sağlığı ve Güvenliği Yönetim Sistemi",
-                    "CE Uygunluk Belgesi (Avrupa Birliği Standartları)",
-                    "TSE ISO 3834 Kaynak Kalite Yönetim Sistemi",
-                    "API Q1 Petrol ve Doğalgaz Endüstrisi Kalite Yönetim Sistemi"
-                ]
-            }
-        },
-        {
-            id: 3,
-            name: "Laboratuvar",
-            isActive: false,
-            content: {
-                title: "Kalite Kontrol Laboratuvarımız",
-                description: "Modern teknoloji ile donatılmış laboratuvarımızda, üretim sürecinin her aşamasında kalite kontrol testleri gerçekleştirilmektedir.",
-                points: [
-                    "Malzeme Analiz ve Test Cihazları",
-                    "Boyutsal Ölçüm ve Kontrol Sistemleri",
-                    "Yüzey Pürüzlülük Ölçüm Cihazları",
-                    "Sertlik Test Cihazları (Rockwell, Brinell, Vickers)",
-                    "Çekme ve Basma Test Makinaları",
-                    "Metalografik İnceleme Mikroskopları",
-                    "Spektrometre (Malzeme Kompozisyon Analizi)",
-                    "Koordinat Ölçüm Makinası (CMM)"
-                ]
-            }
-        },
-        {
-            id: 4,
-            name: "Kalite Prosedürleri",
-            isActive: false,
-            content: {
-                title: "Kalite Kontrol Prosedürlerimiz",
-                description: "Üretim sürecinin her aşamasında uygulanan detaylı kalite kontrol prosedürlerimiz:",
-                points: [
-                    "Hammadde Giriş Kontrol Prosedürleri",
-                    "Süreç İçi Kalite Kontrol Adımları",
-                    "Son Ürün Muayene ve Test Prosedürleri",
-                    "Hatalı Ürün Değerlendirme ve Düzeltici Faaliyet Prosedürleri",
-                    "Müşteri Şikayet Yönetim Prosedürleri",
-                    "Kalimasyon ve Validasyon Prosedürleri"
-                ]
-            }
-        },
-        {
-            id: 5,
-            name: "Sürekli İyileştirme",
-            isActive: false,
-            content: {
-                title: "Sürekli İyileştirme Faaliyetlerimiz",
-                description: "Kalite yönetim sistemimizi sürekli geliştirmek için gerçekleştirdiğimiz faaliyetler:",
-                points: [
-                    "Düzenli İç Denetim Faaliyetleri",
-                    "Yönetimin Gözden Geçirme Toplantıları",
-                    "Çalışan Öneri Sistemi",
-                    "Müşteri Memnuniyet Anketleri",
-                    "Tedarikçi Değerlendirme ve Geliştirme Programları",
-                    "Eğitim ve Yetkinlik Geliştirme Programları",
-                    "Risk Analizi ve Fırsat Değerlendirmeleri"
-                ]
-            }
-        }
-    ]);
+    const [qualityCategories, setQualityCategories] = useState([]);
+    const [activeCategory, setActiveCategory] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const [activeCategory, setActiveCategory] = useState(1);
+    // API'den kalite kategorilerini çek
+    useEffect(() => {
+        fetchQualityCategories();
+    }, []);
+
+    const fetchQualityCategories = async () => {
+        try {
+            const response = await fetch(buildApiUrl('/quality-management'));
+            if (response.ok) {
+                const data = await response.json();
+                setQualityCategories(data);
+                // İlk kategoriyi otomatik seç
+                if (data.length > 0) {
+                    setActiveCategory(data[0]._id);
+                }
+            } else {
+                message.error('Kalite kategorileri yüklenirken hata oluştu');
+            }
+        } catch (error) {
+            console.error('Quality categories fetch error:', error);
+            message.error('Kalite kategorileri yüklenirken hata oluştu');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getActiveContent = () => {
-        return qualityCategories.find(cat => cat.id === activeCategory)?.content;
+        return qualityCategories.find(cat => cat._id === activeCategory);
     };
+
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                <Spin size="large" />
+            </div>
+        );
+    }
 
     return (
         <div className="services-page">
@@ -126,55 +71,63 @@ const ServicesPage = () => {
                         <p>25 yıllık deneyimimizle sürekli gelişen kalite anlayışımız</p>
                     </div>
 
-                    <div className="quality-layout">
-                        {/* Sol Kategori Menüsü */}
-                        <div className="categories-sidebar">
-                            <div className="sidebar-header">
-                                <h3>Kalite Kategorileri</h3>
-                            </div>
-                            <div className="category-list">
-                                {qualityCategories.map((category) => (
-                                    <div
-                                        key={category.id}
-                                        className={`category-item ${activeCategory === category.id ? 'active' : ''}`}
-                                        onClick={() => setActiveCategory(category.id)}
-                                    >
-                                        <i className="bi bi-chevron-right"></i>
-                                        {category.name}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Sağ İçerik Alanı */}
-                        <div className="content-area">
-                            {getActiveContent() && (
-                                <div className="content-card">
-                                    <div className="content-header">
-                                        <h2>{getActiveContent().title}</h2>
-                                        <div className="content-line"></div>
-                                    </div>
-
-                                    <div className="content-description">
-                                        <p>{getActiveContent().description}</p>
-                                    </div>
-
-                                    <div className="content-points">
-                                        <ul>
-                                            {getActiveContent().points.map((point, index) => (
-                                                <li key={index} className="point-item">
-                                                    <div className="point-icon">
-                                                        <i className="bi bi-check-circle"></i>
-                                                    </div>
-                                                    <span>{point}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                    {qualityCategories.length > 0 && (
+                        <div className="quality-layout">
+                            {/* Sol Kategori Menüsü */}
+                            <div className="categories-sidebar">
+                                <div className="sidebar-header">
+                                    <h3>Kalite Kategorileri</h3>
                                 </div>
-                            )}
+                                <div className="category-list">
+                                    {qualityCategories.map((category) => (
+                                        <div
+                                            key={category._id}
+                                            className={`category-item ${activeCategory === category._id ? 'active' : ''}`}
+                                            onClick={() => setActiveCategory(category._id)}
+                                        >
+                                            <i className={`bi ${category.icon || 'bi-chevron-right'}`}></i>
+                                            {category.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Sağ İçerik Alanı */}
+                            <div className="content-area">
+                                {getActiveContent() && (
+                                    <div className="content-card">
+                                        <div className="content-header">
+                                            <h2>{getActiveContent().content.title}</h2>
+                                            <div className="content-line" style={{ backgroundColor: getActiveContent().color }}></div>
+                                        </div>
+
+                                        <div className="content-description">
+                                            <p>{getActiveContent().content.description}</p>
+                                        </div>
+
+                                        <div className="content-points">
+                                            <ul>
+                                                {getActiveContent().content.points.map((point, index) => (
+                                                    <li key={index} className="point-item">
+                                                        <div className="point-icon" style={{ backgroundColor: getActiveContent().color }}>
+                                                            <i className="bi bi-check-circle"></i>
+                                                        </div>
+                                                        <span>{point}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {qualityCategories.length === 0 && !loading && (
+                        <div className="no-data">
+                            <p>Henüz kalite kategorisi bulunmuyor.</p>
+                        </div>
+                    )}
                 </div>
             </section>
 

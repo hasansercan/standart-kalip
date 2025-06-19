@@ -127,7 +127,13 @@ const UserPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/api/users`);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiUrl}/api/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -136,15 +142,20 @@ const UserPage = () => {
         message.error("Veri getirme başarısız.");
       }
     } catch (error) {
-      } finally {
+    } finally {
       setLoading(false);
     }
   }, [apiUrl]);
 
   const deleteUser = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`${apiUrl}/api/users/${userId}`, {
         method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -166,9 +177,11 @@ const UserPage = () => {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`${apiUrl}/api/users/${userId}/status`, {
         method: "PATCH",
         headers: {
+          'Authorization': `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ isActive: newStatus }),

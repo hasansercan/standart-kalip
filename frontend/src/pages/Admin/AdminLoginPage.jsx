@@ -1,7 +1,7 @@
 import { message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildApiUrl } from "../../config/apiConfig";
+import { useAuth } from "../../context/AuthContext";
 import "./AdminLoginPage.css";
 
 const AdminLoginPage = () => {
@@ -11,6 +11,14 @@ const AdminLoginPage = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login, user, isAuthenticated, loading: authLoading } = useAuth();
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (!authLoading && isAuthenticated && user && (user.role === "admin" || user.role === "moderator")) {
+            navigate("/admin/dashboard");
+        }
+    }, [authLoading, isAuthenticated, user, navigate]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -22,28 +30,29 @@ const AdminLoginPage = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(buildApiUrl('/auth/login'), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
+            const result = await login(formData.email, formData.password);
 
-            if (response.ok) {
-                const data = await response.json();
+            if (result.success) {
+                const user = result.user;
 
-                if (data.role === "admin" || data.role === "moderator") {
-                    localStorage.setItem("user", JSON.stringify(data));
-                    message.success(data.role === "admin" ? "Admin girişi başarılı." : "Moderatör girişi başarılı.");
-                    // Admin paneline yönlendir
-                    navigate("/admin/dashboard");
+                if (user.role === "admin" || user.role === "moderator") {
+                    message.success(user.role === "admin" ? "Admin girişi başarılı." : "Moderatör girişi başarılı.");
+
+                    setTimeout(() => {
+                        navigate("/admin/dashboard");
+                    }, 100);
                 } else {
                     message.error("Bu alan sadece yöneticiler ve moderatörler için!");
                 }
             } else {
-                const errorResponse = await response.json();
-                message.error(errorResponse.error || "Giriş başarısız. Bilgilerinizi kontrol edin.");
+                // Login error handling
+                if (result.code === "RATE_LIMITED") {
+                    message.error("Çok fazla deneme yaptınız. 15 dakika sonra tekrar deneyin.");
+                } else if (result.code === "INVALID_CREDENTIALS") {
+                    message.error("E-posta veya şifre hatalı. Lütfen tekrar deneyin.");
+                } else {
+                    message.error(result.error || "Giriş başarısız. Bilgilerinizi kontrol edin.");
+                }
             }
         } catch (error) {
             message.error("Bağlantı hatası. Lütfen internet bağlantınızı kontrol edin.");

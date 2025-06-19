@@ -1,100 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { buildApiUrl } from "../config/apiConfig";
 import "./CareersPage.css";
 
 const CareersPage = () => {
-    // Admin panelinden yönetilebilir açık pozisyonlar
-    const [openPositions] = useState([
-        {
-            id: 1,
-            title: "Kalıp Tasarım Mühendisi",
-            department: "Mühendislik",
-            location: "İstanbul",
-            type: "Tam Zamanlı",
-            experience: "3-5 Yıl",
-            description: "Plastik enjeksiyon kalıpları tasarımı ve geliştirilmesi konusunda deneyimli mühendis aranmaktadır.",
-            requirements: [
-                "Makine Mühendisliği veya ilgili bölüm mezunu",
-                "AutoCAD, SolidWorks, UG NX programlarında yetkin",
-                "En az 3 yıl kalıp tasarımı deneyimi",
-                "Takım çalışmasına yatkın",
-                "İngilizce bilgisi (orta seviye)"
-            ],
-            isActive: true,
-            postedDate: "2024-01-15"
-        },
-        {
-            id: 2,
-            title: "CNC Operatörü",
-            department: "Üretim",
-            location: "İstanbul",
-            type: "Tam Zamanlı",
-            experience: "2-4 Yıl",
-            description: "CNC tezgahlarında kalıp parçalarının imalatı konusunda deneyimli operatör aranmaktadır.",
-            requirements: [
-                "Teknik lise veya meslek lisesi mezunu",
-                "CNC programlama bilgisi",
-                "Fanuc, Siemens kontrol sistemleri deneyimi",
-                "Hassas ölçüm aletleri kullanımı",
-                "Vardiya sisteminde çalışabilir"
-            ],
-            isActive: true,
-            postedDate: "2024-01-10"
-        },
-        {
-            id: 3,
-            title: "Kalite Kontrol Teknisyeni",
-            department: "Kalite",
-            location: "İstanbul",
-            type: "Tam Zamanlı",
-            experience: "1-3 Yıl",
-            description: "Kalıp ve mamul kalite kontrolü yapacak teknisyen aranmaktadır.",
-            requirements: [
-                "Makine veya Metal öğretmenliği mezunu",
-                "Ölçüm cihazları kullanımı",
-                "Koordinat ölçüm makinesi (CMM) deneyimi",
-                "ISO 9001 standartları bilgisi",
-                "Detaylara dikkat"
-            ],
-            isActive: true,
-            postedDate: "2024-01-08"
-        },
-        {
-            id: 4,
-            title: "Satış Temsilcisi",
-            department: "Satış",
-            location: "İstanbul",
-            type: "Tam Zamanlı",
-            experience: "2-5 Yıl",
-            description: "Endüstriyel müşterilerle iletişim kuracak satış temsilcisi aranmaktadır.",
-            requirements: [
-                "Üniversite mezunu (tercihen Mühendislik)",
-                "B2B satış deneyimi",
-                "Müşteri ilişkileri yönetimi",
-                "İngilizce bilgisi (iyi seviye)",
-                "Saha çalışmasına uygun"
-            ],
-            isActive: true,
-            postedDate: "2024-01-05"
-        }
-    ]);
-
+    const [openPositions, setOpenPositions] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [selectedPosition, setSelectedPosition] = useState(null);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
-        birthDate: "",
-        birthPlace: "",
-        nationality: "",
-        address: "",
-        phone: "",
         email: "",
-        gender: "",
-        militaryStatus: "",
-        educationLevel: "",
-        educationInfo: "",
-        motivation: "",
-        cv: null
+        phone: "",
+        address: "",
+        experience: "",
+        education: "",
+        skills: "",
+        coverLetter: "",
+        resumeUrl: "",
+        portfolio: "",
+        linkedIn: "",
+        availableStartDate: "",
+        expectedSalary: ""
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitMessage, setSubmitMessage] = useState("");
+
+    // İş ilanlarını API'den çek
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const response = await fetch(buildApiUrl("/jobs"));
+                if (response.ok) {
+                    const jobs = await response.json();
+                    setOpenPositions(jobs);
+                } else {
+                    console.error("İş ilanları getirilemedi");
+                }
+            } catch (error) {
+                console.error("İş ilanları getirilirken hata:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchJobs();
+    }, []);
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({
@@ -103,10 +53,83 @@ const CareersPage = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert("Başvurunuz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
-        setSelectedPosition(null);
+        setIsSubmitting(true);
+        setSubmitMessage("");
+
+        // Form validasyonu
+        if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone ||
+            !formData.address || !formData.experience || !formData.education || !formData.coverLetter) {
+            setSubmitMessage("Lütfen tüm zorunlu alanları doldurun.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setSubmitMessage("Lütfen geçerli bir e-posta adresi girin.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            const applicationData = {
+                ...formData,
+                jobId: selectedPosition._id,
+                skills: formData.skills.split(',').map(skill => skill.trim()).filter(skill => skill)
+            };
+
+            const response = await fetch(buildApiUrl("/job-applications"), {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(applicationData),
+            });
+
+            if (response.ok) {
+                setSubmitMessage("Başvurunuz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
+                setFormData({
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    phone: "",
+                    address: "",
+                    experience: "",
+                    education: "",
+                    skills: "",
+                    coverLetter: "",
+                    resumeUrl: "",
+                    portfolio: "",
+                    linkedIn: "",
+                    availableStartDate: "",
+                    expectedSalary: ""
+                });
+                setTimeout(() => {
+                    setSelectedPosition(null);
+                    setSubmitMessage("");
+                }, 3000);
+            } else {
+                const errorData = await response.json();
+                setSubmitMessage(errorData.error || "Başvuru gönderilirken bir hata oluştu.");
+            }
+        } catch (error) {
+            console.error("Başvuru gönderme hatası:", error);
+            setSubmitMessage("Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const getJobTypeText = (type) => {
+        const types = {
+            "full-time": "Tam Zamanlı",
+            "part-time": "Yarı Zamanlı",
+            "contract": "Sözleşmeli",
+            "internship": "Staj"
+        };
+        return types[type] || type;
     };
 
     return (
@@ -138,110 +161,125 @@ const CareersPage = () => {
                         Açık Pozisyonlar
                     </h2>
 
-                    <div className="row">
-                        {openPositions.map((position) => (
-                            <div key={position.id} className="col-lg-6 col-md-6" style={{ marginBottom: "30px" }}>
-                                <div style={{
-                                    backgroundColor: "white",
-                                    borderRadius: "8px",
-                                    padding: "25px",
-                                    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                                    height: "100%",
-                                    transition: "transform 0.3s ease"
-                                }}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                                >
+                    {loading ? (
+                        <div style={{ textAlign: "center", padding: "40px" }}>
+                            <p>İş ilanları yükleniyor...</p>
+                        </div>
+                    ) : openPositions.length === 0 ? (
+                        <div style={{ textAlign: "center", padding: "40px" }}>
+                            <p>Şu anda açık pozisyon bulunmamaktadır.</p>
+                        </div>
+                    ) : (
+                        <div className="row">
+                            {openPositions.map((position) => (
+                                <div key={position._id} className="col-lg-6 col-md-6" style={{ marginBottom: "30px" }}>
                                     <div style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "flex-start",
-                                        marginBottom: "15px"
-                                    }}>
-                                        <h3 style={{
-                                            color: "#8b2635",
-                                            fontSize: "1.3rem",
-                                            fontWeight: "600",
-                                            margin: "0"
+                                        backgroundColor: "white",
+                                        borderRadius: "8px",
+                                        padding: "25px",
+                                        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                                        height: "100%",
+                                        transition: "transform 0.3s ease"
+                                    }}
+                                        onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
+                                        onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                                    >
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "flex-start",
+                                            marginBottom: "15px"
                                         }}>
-                                            {position.title}
-                                        </h3>
-                                        <span style={{
-                                            backgroundColor: "#28a745",
-                                            color: "white",
-                                            padding: "4px 12px",
-                                            borderRadius: "15px",
-                                            fontSize: "12px",
-                                            fontWeight: "500"
-                                        }}>
-                                            {position.type}
-                                        </span>
-                                    </div>
-
-                                    <div style={{ marginBottom: "15px" }}>
-                                        <div style={{ display: "flex", gap: "20px", marginBottom: "10px" }}>
-                                            <span style={{ color: "#666", fontSize: "14px" }}>
-                                                📍 {position.location}
-                                            </span>
-                                            <span style={{ color: "#666", fontSize: "14px" }}>
-                                                🏢 {position.department}
-                                            </span>
-                                            <span style={{ color: "#666", fontSize: "14px" }}>
-                                                ⏱️ {position.experience}
+                                            <h3 style={{
+                                                color: "#8b2635",
+                                                fontSize: "1.3rem",
+                                                fontWeight: "600",
+                                                margin: "0"
+                                            }}>
+                                                {position.title}
+                                            </h3>
+                                            <span style={{
+                                                backgroundColor: "#28a745",
+                                                color: "white",
+                                                padding: "4px 12px",
+                                                borderRadius: "15px",
+                                                fontSize: "12px",
+                                                fontWeight: "500"
+                                            }}>
+                                                {getJobTypeText(position.type)}
                                             </span>
                                         </div>
-                                    </div>
 
-                                    <p style={{
-                                        color: "#555",
-                                        fontSize: "14px",
-                                        lineHeight: "1.6",
-                                        marginBottom: "20px"
-                                    }}>
-                                        {position.description}
-                                    </p>
+                                        <div style={{ marginBottom: "15px" }}>
+                                            <div style={{ display: "flex", gap: "20px", marginBottom: "10px", flexWrap: "wrap" }}>
+                                                <span style={{ color: "#666", fontSize: "14px" }}>
+                                                    📍 {position.location}
+                                                </span>
+                                                <span style={{ color: "#666", fontSize: "14px" }}>
+                                                    🏢 {position.department}
+                                                </span>
+                                                <span style={{ color: "#666", fontSize: "14px" }}>
+                                                    ⏱️ {position.experience}
+                                                </span>
+                                            </div>
+                                            {position.salary && (
+                                                <div style={{ color: "#666", fontSize: "14px" }}>
+                                                    💰 {position.salary}
+                                                </div>
+                                            )}
+                                        </div>
 
-                                    <div style={{ marginBottom: "20px" }}>
-                                        <h5 style={{ color: "#333", fontSize: "14px", marginBottom: "10px" }}>
-                                            Aranan Özellikler:
-                                        </h5>
-                                        <ul style={{
-                                            margin: "0",
-                                            paddingLeft: "20px",
-                                            color: "#666",
-                                            fontSize: "13px"
-                                        }}>
-                                            {position.requirements.slice(0, 3).map((req, index) => (
-                                                <li key={index} style={{ marginBottom: "3px" }}>
-                                                    {req}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <button
-                                        onClick={() => setSelectedPosition(position)}
-                                        style={{
-                                            backgroundColor: "#8b2635",
-                                            color: "white",
-                                            border: "none",
-                                            padding: "10px 20px",
-                                            borderRadius: "5px",
+                                        <p style={{
+                                            color: "#555",
                                             fontSize: "14px",
-                                            fontWeight: "600",
-                                            cursor: "pointer",
-                                            transition: "background-color 0.3s ease",
-                                            width: "100%"
-                                        }}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = "#a91d3a"}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = "#8b2635"}
-                                    >
-                                        Başvuru Yap
-                                    </button>
+                                            lineHeight: "1.6",
+                                            marginBottom: "20px"
+                                        }}>
+                                            {position.description}
+                                        </p>
+
+                                        <div style={{ marginBottom: "20px" }}>
+                                            <h5 style={{ color: "#333", fontSize: "14px", marginBottom: "10px" }}>
+                                                Aranan Özellikler:
+                                            </h5>
+                                            <ul style={{
+                                                margin: "0",
+                                                paddingLeft: "20px",
+                                                color: "#666",
+                                                fontSize: "13px"
+                                            }}>
+                                                {position.requirements.slice(0, 3).map((req, index) => (
+                                                    <li key={index} style={{ marginBottom: "3px" }}>
+                                                        {req}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <button
+                                            onClick={() => setSelectedPosition(position)}
+                                            style={{
+                                                backgroundColor: "#8b2635",
+                                                color: "white",
+                                                border: "none",
+                                                padding: "10px 20px",
+                                                borderRadius: "5px",
+                                                fontSize: "14px",
+                                                fontWeight: "600",
+                                                cursor: "pointer",
+                                                transition: "background-color 0.3s ease",
+                                                width: "100%"
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = "#a91d3a"}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = "#8b2635"}
+                                        >
+                                            Başvuru Yap
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -303,34 +341,20 @@ const CareersPage = () => {
 
                         {/* Form Content */}
                         <form onSubmit={handleSubmit} style={{ padding: "30px" }}>
-
-                            {/* Hangi pozisyona çalışmak istiyorsunuz */}
-                            <div style={{ marginBottom: "30px" }}>
-                                <label style={{
-                                    display: "block",
-                                    marginBottom: "8px",
-                                    fontWeight: "600",
-                                    color: "#333",
-                                    fontSize: "14px"
+                            {submitMessage && (
+                                <div style={{
+                                    padding: "10px",
+                                    marginBottom: "20px",
+                                    borderRadius: "4px",
+                                    backgroundColor: submitMessage.includes("başarıyla") ? "#d4edda" : "#f8d7da",
+                                    color: submitMessage.includes("başarıyla") ? "#155724" : "#721c24",
+                                    border: `1px solid ${submitMessage.includes("başarıyla") ? "#c3e6cb" : "#f5c6cb"}`
                                 }}>
-                                    Hangi pozisyona çalışmak istiyorsunuz?
-                                </label>
-                                <input
-                                    type="text"
-                                    value={selectedPosition.title}
-                                    readOnly
-                                    style={{
-                                        width: "100%",
-                                        padding: "10px",
-                                        border: "1px solid #ddd",
-                                        borderRadius: "4px",
-                                        fontSize: "14px",
-                                        backgroundColor: "#f8f9fa"
-                                    }}
-                                />
-                            </div>
+                                    {submitMessage}
+                                </div>
+                            )}
 
-                            {/* Kişisel Bilgileriniz */}
+                            {/* Kişisel Bilgiler */}
                             <div style={{ marginBottom: "30px" }}>
                                 <h4 style={{
                                     color: "#8b2635",
@@ -339,18 +363,19 @@ const CareersPage = () => {
                                     borderBottom: "2px solid #8b2635",
                                     paddingBottom: "5px"
                                 }}>
-                                    Kişisel Bilgileriniz
+                                    Kişisel Bilgiler
                                 </h4>
 
                                 <div className="row">
                                     <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Ad Soyad
+                                            Ad *
                                         </label>
                                         <input
                                             type="text"
                                             value={formData.firstName}
                                             onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                            required
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -358,17 +383,18 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
-                                            placeholder="Ad Soyad"
+                                            placeholder="Adınız"
                                         />
                                     </div>
                                     <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Soyad
+                                            Soyad *
                                         </label>
                                         <input
                                             type="text"
                                             value={formData.lastName}
                                             onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                            required
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -376,20 +402,21 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
-                                            placeholder="Soyad"
+                                            placeholder="Soyadınız"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="row">
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Doğum Tarihi
+                                            E-posta *
                                         </label>
                                         <input
-                                            type="date"
-                                            value={formData.birthDate}
-                                            onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            required
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -397,16 +424,18 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
+                                            placeholder="ornek@email.com"
                                         />
                                     </div>
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Doğum Yeri
+                                            Telefon *
                                         </label>
                                         <input
-                                            type="text"
-                                            value={formData.birthPlace}
-                                            onChange={(e) => handleInputChange('birthPlace', e.target.value)}
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                                            required
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -414,134 +443,127 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
-                                            placeholder="Doğum Yeri"
-                                        />
-                                    </div>
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
-                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Uyruk
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={formData.nationality}
-                                            onChange={(e) => handleInputChange('nationality', e.target.value)}
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                border: "1px solid #ddd",
-                                                borderRadius: "4px",
-                                                fontSize: "14px"
-                                            }}
-                                            placeholder="Uyruk"
+                                            placeholder="+90 555 123 45 67"
                                         />
                                     </div>
                                 </div>
 
                                 <div style={{ marginBottom: "15px" }}>
                                     <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                        Adres
+                                        Adres *
                                     </label>
-                                    <textarea
+                                    <input
+                                        type="text"
                                         value={formData.address}
                                         onChange={(e) => handleInputChange('address', e.target.value)}
+                                        required
+                                        style={{
+                                            width: "100%",
+                                            padding: "8px",
+                                            border: "1px solid #ddd",
+                                            borderRadius: "4px",
+                                            fontSize: "14px"
+                                        }}
+                                        placeholder="Tam adresiniz"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Profesyonel Bilgiler */}
+                            <div style={{ marginBottom: "30px" }}>
+                                <h4 style={{
+                                    color: "#8b2635",
+                                    marginBottom: "20px",
+                                    fontSize: "1.1rem",
+                                    borderBottom: "2px solid #8b2635",
+                                    paddingBottom: "5px"
+                                }}>
+                                    Profesyonel Bilgiler
+                                </h4>
+
+                                <div className="row">
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
+                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                            Deneyim *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={formData.experience}
+                                            onChange={(e) => handleInputChange('experience', e.target.value)}
+                                            required
+                                            style={{
+                                                width: "100%",
+                                                padding: "8px",
+                                                border: "1px solid #ddd",
+                                                borderRadius: "4px",
+                                                fontSize: "14px"
+                                            }}
+                                            placeholder="Örn: 3 yıl CNC operatörlüğü"
+                                        />
+                                    </div>
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
+                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                            Eğitim *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={formData.education}
+                                            onChange={(e) => handleInputChange('education', e.target.value)}
+                                            required
+                                            style={{
+                                                width: "100%",
+                                                padding: "8px",
+                                                border: "1px solid #ddd",
+                                                borderRadius: "4px",
+                                                fontSize: "14px"
+                                            }}
+                                            placeholder="Örn: Makine Mühendisliği - İTÜ"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: "15px" }}>
+                                    <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                        Yetenekler (virgülle ayırın)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.skills}
+                                        onChange={(e) => handleInputChange('skills', e.target.value)}
+                                        style={{
+                                            width: "100%",
+                                            padding: "8px",
+                                            border: "1px solid #ddd",
+                                            borderRadius: "4px",
+                                            fontSize: "14px"
+                                        }}
+                                        placeholder="Örn: AutoCAD, SolidWorks, CNC programlama"
+                                    />
+                                </div>
+
+                                <div style={{ marginBottom: "15px" }}>
+                                    <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                        Ön Yazı *
+                                    </label>
+                                    <textarea
+                                        value={formData.coverLetter}
+                                        onChange={(e) => handleInputChange('coverLetter', e.target.value)}
+                                        required
+                                        rows={4}
                                         style={{
                                             width: "100%",
                                             padding: "8px",
                                             border: "1px solid #ddd",
                                             borderRadius: "4px",
                                             fontSize: "14px",
-                                            minHeight: "60px",
                                             resize: "vertical"
                                         }}
-                                        placeholder="Adres"
+                                        placeholder="Kendinizi tanıtın ve neden bu pozisyon için uygun olduğunuzu açıklayın..."
                                     />
                                 </div>
-
-                                <div className="row">
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
-                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Cep Telefonu
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            value={formData.phone}
-                                            onChange={(e) => handleInputChange('phone', e.target.value)}
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                border: "1px solid #ddd",
-                                                borderRadius: "4px",
-                                                fontSize: "14px"
-                                            }}
-                                            placeholder="Cep Telefonu"
-                                        />
-                                    </div>
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
-                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            E-Mail
-                                        </label>
-                                        <input
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => handleInputChange('email', e.target.value)}
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                border: "1px solid #ddd",
-                                                borderRadius: "4px",
-                                                fontSize: "14px"
-                                            }}
-                                            placeholder="E-Mail"
-                                        />
-                                    </div>
-                                    <div className="col-md-4" style={{ marginBottom: "15px" }}>
-                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Cinsiyet
-                                        </label>
-                                        <select
-                                            value={formData.gender}
-                                            onChange={(e) => handleInputChange('gender', e.target.value)}
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                border: "1px solid #ddd",
-                                                borderRadius: "4px",
-                                                fontSize: "14px"
-                                            }}
-                                        >
-                                            <option value="">Seçiniz</option>
-                                            <option value="erkek">Erkek</option>
-                                            <option value="kadın">Kadın</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="row">
-                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
-                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Askerlik Durumu
-                                        </label>
-                                        <select
-                                            value={formData.militaryStatus}
-                                            onChange={(e) => handleInputChange('militaryStatus', e.target.value)}
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                border: "1px solid #ddd",
-                                                borderRadius: "4px",
-                                                fontSize: "14px"
-                                            }}
-                                        >
-                                            <option value="">Seçiniz</option>
-                                            <option value="yapıldı">Yapıldı</option>
-                                            <option value="muaf">Muaf</option>
-                                            <option value="tecilli">Tecilli</option>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
 
-                            {/* Öğrenim Bilgileriniz */}
+                            {/* Ek Bilgiler */}
                             <div style={{ marginBottom: "30px" }}>
                                 <h4 style={{
                                     color: "#8b2635",
@@ -550,17 +572,18 @@ const CareersPage = () => {
                                     borderBottom: "2px solid #8b2635",
                                     paddingBottom: "5px"
                                 }}>
-                                    Öğrenim Bilgileriniz
+                                    Ek Bilgiler
                                 </h4>
 
                                 <div className="row">
                                     <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Öğrenim Durumu
+                                            CV URL
                                         </label>
-                                        <select
-                                            value={formData.educationLevel}
-                                            onChange={(e) => handleInputChange('educationLevel', e.target.value)}
+                                        <input
+                                            type="url"
+                                            value={formData.resumeUrl}
+                                            onChange={(e) => handleInputChange('resumeUrl', e.target.value)}
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -568,24 +591,17 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
-                                        >
-                                            <option value="">Seçiniz</option>
-                                            <option value="ilköğretim">İlköğretim</option>
-                                            <option value="lise">Lise</option>
-                                            <option value="önlisans">Önlisans</option>
-                                            <option value="lisans">Lisans</option>
-                                            <option value="yükseklisans">Yüksek Lisans</option>
-                                            <option value="doktora">Doktora</option>
-                                        </select>
+                                            placeholder="https://drive.google.com/..."
+                                        />
                                     </div>
                                     <div className="col-md-6" style={{ marginBottom: "15px" }}>
                                         <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
-                                            Okul / Üniversite
+                                            Portfolio
                                         </label>
                                         <input
-                                            type="text"
-                                            value={formData.educationInfo}
-                                            onChange={(e) => handleInputChange('educationInfo', e.target.value)}
+                                            type="url"
+                                            value={formData.portfolio}
+                                            onChange={(e) => handleInputChange('portfolio', e.target.value)}
                                             style={{
                                                 width: "100%",
                                                 padding: "8px",
@@ -593,86 +609,100 @@ const CareersPage = () => {
                                                 borderRadius: "4px",
                                                 fontSize: "14px"
                                             }}
-                                            placeholder="Okul / Üniversite"
+                                            placeholder="https://portfolio.com"
                                         />
                                     </div>
                                 </div>
+
+                                <div className="row">
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
+                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                            LinkedIn
+                                        </label>
+                                        <input
+                                            type="url"
+                                            value={formData.linkedIn}
+                                            onChange={(e) => handleInputChange('linkedIn', e.target.value)}
+                                            style={{
+                                                width: "100%",
+                                                padding: "8px",
+                                                border: "1px solid #ddd",
+                                                borderRadius: "4px",
+                                                fontSize: "14px"
+                                            }}
+                                            placeholder="https://linkedin.com/in/..."
+                                        />
+                                    </div>
+                                    <div className="col-md-6" style={{ marginBottom: "15px" }}>
+                                        <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                            Başlama Tarihi
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={formData.availableStartDate}
+                                            onChange={(e) => handleInputChange('availableStartDate', e.target.value)}
+                                            style={{
+                                                width: "100%",
+                                                padding: "8px",
+                                                border: "1px solid #ddd",
+                                                borderRadius: "4px",
+                                                fontSize: "14px"
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: "15px" }}>
+                                    <label style={{ display: "block", marginBottom: "5px", fontSize: "14px", color: "#333" }}>
+                                        Beklenen Maaş
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.expectedSalary}
+                                        onChange={(e) => handleInputChange('expectedSalary', e.target.value)}
+                                        style={{
+                                            width: "100%",
+                                            padding: "8px",
+                                            border: "1px solid #ddd",
+                                            borderRadius: "4px",
+                                            fontSize: "14px"
+                                        }}
+                                        placeholder="Örn: 25.000 TL"
+                                    />
+                                </div>
                             </div>
 
-                            {/* Motivasyon */}
-                            <div style={{ marginBottom: "30px" }}>
-                                <h4 style={{
-                                    color: "#8b2635",
-                                    marginBottom: "20px",
-                                    fontSize: "1.1rem",
-                                    borderBottom: "2px solid #8b2635",
-                                    paddingBottom: "5px"
-                                }}>
-                                    Neden Firmamızda Çalışmak İstiyorsunuz?
-                                </h4>
-                                <textarea
-                                    value={formData.motivation}
-                                    onChange={(e) => handleInputChange('motivation', e.target.value)}
-                                    style={{
-                                        width: "100%",
-                                        padding: "12px",
-                                        border: "1px solid #ddd",
-                                        borderRadius: "4px",
-                                        fontSize: "14px",
-                                        minHeight: "100px",
-                                        resize: "vertical"
-                                    }}
-                                    placeholder="Motivasyonunuzu ve hedeflerinizi kısaca açıklayınız..."
-                                />
-                            </div>
-
-                            {/* CV Yükleme */}
-                            <div style={{ marginBottom: "30px" }}>
-                                <h4 style={{
-                                    color: "#8b2635",
-                                    marginBottom: "20px",
-                                    fontSize: "1.1rem",
-                                    borderBottom: "2px solid #8b2635",
-                                    paddingBottom: "5px"
-                                }}>
-                                    CV Yükleme
-                                </h4>
-                                <input
-                                    type="file"
-                                    accept=".pdf,.doc,.docx"
-                                    onChange={(e) => handleInputChange('cv', e.target.files[0])}
-                                    style={{
-                                        width: "100%",
-                                        padding: "10px",
-                                        border: "2px dashed #ddd",
-                                        borderRadius: "4px",
-                                        fontSize: "14px"
-                                    }}
-                                />
-                                <small style={{ color: "#666", fontSize: "12px" }}>
-                                    Kabul edilen formatlar: PDF, DOC, DOCX (Maksimum 5MB)
-                                </small>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div style={{ textAlign: "center", marginTop: "30px" }}>
+                            {/* Form Buttons */}
+                            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
                                 <button
-                                    type="submit"
+                                    type="button"
+                                    onClick={() => setSelectedPosition(null)}
                                     style={{
-                                        backgroundColor: "#007bff",
+                                        backgroundColor: "#6c757d",
                                         color: "white",
                                         border: "none",
-                                        padding: "15px 40px",
+                                        padding: "12px 24px",
                                         borderRadius: "5px",
-                                        fontSize: "16px",
-                                        fontWeight: "600",
-                                        cursor: "pointer",
-                                        transition: "background-color 0.3s ease"
+                                        fontSize: "14px",
+                                        cursor: "pointer"
                                     }}
-                                    onMouseEnter={(e) => e.target.style.backgroundColor = "#0056b3"}
-                                    onMouseLeave={(e) => e.target.style.backgroundColor = "#007bff"}
                                 >
-                                    Başvuruyu Tamamla
+                                    İptal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    style={{
+                                        backgroundColor: isSubmitting ? "#ccc" : "#8b2635",
+                                        color: "white",
+                                        border: "none",
+                                        padding: "12px 24px",
+                                        borderRadius: "5px",
+                                        fontSize: "14px",
+                                        cursor: isSubmitting ? "not-allowed" : "pointer"
+                                    }}
+                                >
+                                    {isSubmitting ? "Gönderiliyor..." : "Başvuru Gönder"}
                                 </button>
                             </div>
                         </form>

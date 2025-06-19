@@ -16,7 +16,13 @@ const UpdateUserPage = () => {
     const fetchUser = useCallback(async () => {
         setDataLoading(true);
         try {
-            const response = await fetch(`${apiUrl}/api/users/${userId}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${apiUrl}/api/users/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
             if (response.ok) {
                 const data = await response.json();
@@ -35,7 +41,7 @@ const UpdateUserPage = () => {
                 message.error("Kullanıcı bilgileri alınamadı.");
             }
         } catch (error) {
-            } finally {
+        } finally {
             setDataLoading(false);
         }
     }, [apiUrl, userId, form]);
@@ -53,9 +59,11 @@ const UpdateUserPage = () => {
                 delete submitData.password;
             }
 
+            const token = localStorage.getItem('token');
             const response = await fetch(`${apiUrl}/api/users/${userId}`, {
                 method: "PUT",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(submitData),
