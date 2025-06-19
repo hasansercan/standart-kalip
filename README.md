@@ -166,11 +166,17 @@ git clone <your-repo-url> .
 # scp -r ./standart-kalip root@104.247.163.244:/var/www/standart-kalip/
 ```
 
-### 8. Environment Dosyasını Oluşturun
+### 8. Environment Dosyalarını Oluşturun
 ```bash
 cd /var/www/standart-kalip
+
+# Backend environment
 cp env.production.example backend/.env
 nano backend/.env
+
+# Frontend environment
+cp frontend/env.production.example frontend/.env.production
+nano frontend/.env.production
 ```
 
 `backend/.env` dosyasını düzenleyin:
@@ -184,6 +190,14 @@ STRIPE_SECRET_KEY=sk_live_your_live_stripe_key
 NODE_ENV=production
 PORT=5000
 FRONTEND_URL=https://decayazilim.com
+```
+
+`frontend/.env.production` dosyasını da düzenleyin:
+```env
+VITE_API_BASE_URL=https://api.decayazilim.com
+VITE_STRIPE_PUBLIC_KEY=pk_live_your_stripe_live_public_key
+VITE_APP_NAME=Standart Kalıp
+VITE_DEBUG=false
 ```
 
 ### 9. Dependencies Kurulumu
