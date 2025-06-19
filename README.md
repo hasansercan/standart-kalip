@@ -17,7 +17,6 @@ Modern ve güvenli e-ticaret platformu. React frontend ve Node.js/Express backen
 - ✅ Stripe ödeme entegrasyonu
 - ✅ Cloudinary görsel yönetimi
 - ✅ Responsive tasarım
-- ✅ Docker desteği
 - ✅ SSL sertifikası
 - ✅ Production ready
 
@@ -26,265 +25,370 @@ Modern ve güvenli e-ticaret platformu. React frontend ve Node.js/Express backen
 ### Local Development
 - Node.js 18+
 - npm 8+
-- MongoDB (Docker ile otomatik kurulum)
+- MongoDB
 
 ### Production Deployment
 - Ubuntu 20.04+ sunucu
-- Docker & Docker Compose
+- Node.js 18+
+- MongoDB
 - Nginx
+- PM2
 - SSL sertifikası (Let's Encrypt)
 
 ## 🛠️ Local Development
 
-### Hızlı Başlangıç
-
-1. **Projeyi klonlayın:**
+### 1. Projeyi Klonlayın
 ```bash
 git clone <repository-url>
 cd standart-kalip
 ```
 
-2. **Environment dosyasını yapılandırın:**
+### 2. Environment Dosyasını Oluşturun
 ```bash
-cp .env.local.example .env.local
-# .env.local dosyasını düzenleyin
+cp env.local.example backend/.env
 ```
 
-3. **Development sunucularını başlatın:**
-```bash
-chmod +x local-dev.sh
-./local-dev.sh start
+`backend/.env` dosyasını düzenleyin:
+```env
+MONGO_URI=mongodb://localhost:27017/standart_kalip_dev
+JWT_SECRET=your_jwt_secret_for_development
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+STRIPE_SECRET_KEY=sk_test_your_stripe_test_key
+NODE_ENV=development
+PORT=5000
+FRONTEND_URL=http://localhost:5173
 ```
 
-4. **Uygulamaya erişin:**
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:5000
-- Admin Panel: http://localhost:5173/admin
+### 3. MongoDB'yi Başlatın
+```bash
+# Ubuntu/MacOS
+sudo systemctl start mongod
 
-### Manuel Kurulum
+# Windows
+net start MongoDB
+```
 
-#### Backend
+### 4. Backend'i Başlatın
 ```bash
 cd backend
 npm install
 npm run dev
 ```
 
-#### Frontend
+### 5. Frontend'i Başlatın
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Environment Variables
+### 6. Uygulamaya Erişin
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+- Admin Panel: http://localhost:5173/admin
 
-`.env.local` dosyasında aşağıdaki değişkenleri yapılandırın:
+---
 
-```env
-# Database
-MONGO_URI=mongodb://localhost:27017/standart_kalip_dev
+## 🌐 Production Deployment (Ubuntu Server)
 
-# JWT
-JWT_SECRET=your_jwt_secret
+### Sunucu Bilgileri:
+- **IP:** 104.247.163.244
+- **Domain:** decayazilim.com
+- **SSL:** Let's Encrypt ile otomatik
 
-# Cloudinary (Görsel yükleme)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Stripe (Ödeme)
-STRIPE_SECRET_KEY=sk_test_your_test_key
-
-# API URL
-VITE_API_BASE_URL=http://localhost:5000
-```
-
-## 🌐 Production Deployment
-
-### Otomatik Deployment
-
-1. **Environment dosyasını yapılandırın:**
+### 1. SSH ile Sunucuya Bağlanın
 ```bash
-cp .env.production.example .env.production
-# .env.production dosyasını production değerleri ile düzenleyin
-```
-
-2. **Deployment script'ini çalıştırın:**
-```bash
-chmod +x deploy.sh
-./deploy.sh
-```
-
-### Manuel Deployment
-
-#### 1. Sunucu Hazırlığı
-
-Ubuntu sunucunuzda:
-```bash
-# Dosyaları sunucuya yükleyin
-scp -r . root@104.247.163.244:/var/www/standart-kalip/
-
-# Sunucuya bağlanın
 ssh root@104.247.163.244
+```
 
-# Kurulum script'ini çalıştırın
+### 2. Sistem Güncellemesi
+```bash
+apt update && apt upgrade -y
+```
+
+### 3. Node.js Kurulumu
+```bash
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+apt-get install -y nodejs
+```
+
+### 4. MongoDB Kurulumu
+```bash
+# Import MongoDB GPG key
+wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+
+# Add MongoDB repository
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+# Install MongoDB
+apt update
+apt install -y mongodb-org
+
+# Start MongoDB
+systemctl start mongod
+systemctl enable mongod
+```
+
+### 5. Nginx Kurulumu
+```bash
+apt install -y nginx
+```
+
+### 6. PM2 Kurulumu
+```bash
+npm install -g pm2
+```
+
+### 7. Proje Dosyalarını Yükleyin
+```bash
+# Proje dizinini oluşturun
+mkdir -p /var/www/standart-kalip
 cd /var/www/standart-kalip
-chmod +x setup-server.sh
-./setup-server.sh
+
+# Git ile projeyi klonlayın
+git clone <your-repo-url> .
+
+# VEYA local'den dosyaları kopyalayın
+# scp -r ./standart-kalip root@104.247.163.244:/var/www/standart-kalip/
 ```
 
-#### 2. Environment Yapılandırması
+### 8. Environment Dosyasını Oluşturun
+```bash
+cd /var/www/standart-kalip
+cp env.production.example backend/.env
+nano backend/.env
+```
 
-`.env.production` dosyasını production değerleri ile düzenleyin:
+`backend/.env` dosyasını düzenleyin:
 ```env
-MONGO_URI=mongodb://standart-kalip-mongo:27017/standart_kalip
-JWT_SECRET=very_secure_production_key
-FRONTEND_URL=https://decayazilim.com.tr
-VITE_API_BASE_URL=https://api.decayazilim.com.tr
+MONGO_URI=mongodb://localhost:27017/standart_kalip_production
+JWT_SECRET=your_very_secure_production_jwt_secret_32_characters
+CLOUDINARY_CLOUD_NAME=your_production_cloudinary_name
+CLOUDINARY_API_KEY=your_production_api_key
+CLOUDINARY_API_SECRET=your_production_api_secret
+STRIPE_SECRET_KEY=sk_live_your_live_stripe_key
+NODE_ENV=production
+PORT=5000
+FRONTEND_URL=https://decayazilim.com
 ```
 
-#### 3. Docker Containers Başlatma
-
+### 9. Dependencies Kurulumu
 ```bash
-docker-compose --env-file .env.production up -d --build
+# Backend dependencies
+cd backend
+npm install --production
+
+# Frontend build
+cd ../frontend
+npm install
+npm run build
 ```
 
-#### 4. SSL Sertifikası Kurulumu
-
+### 10. Nginx Konfigürasyonu
 ```bash
-certbot --nginx -d decayazilim.com.tr -d www.decayazilim.com.tr
+# Nginx konfigürasyon dosyasını kopyalayın
+cp /var/www/standart-kalip/nginx-reverse-proxy.conf /etc/nginx/sites-available/standart-kalip
+
+# Site'ı aktifleştirin
+ln -s /etc/nginx/sites-available/standart-kalip /etc/nginx/sites-enabled/
+
+# Default site'ı kaldırın
+rm -f /etc/nginx/sites-enabled/default
+
+# Nginx'i test edin
+nginx -t
+
+# Nginx'i yeniden başlatın
+systemctl restart nginx
 ```
 
-#### 5. DNS Yapılandırması
+### 11. Firewall Ayarları
+```bash
+ufw allow 22/tcp   # SSH
+ufw allow 80/tcp   # HTTP
+ufw allow 443/tcp  # HTTPS
+ufw --force enable
+```
 
-Domain sağlayıcınızda aşağıdaki kayıtları ekleyin:
+### 12. PM2 ile Backend'i Başlatın
+```bash
+cd /var/www/standart-kalip/backend
+
+# PM2 ecosystem dosyası oluşturun
+cat > ecosystem.config.js << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'standart-kalip-backend',
+    script: 'server.js',
+    instances: 'max',
+    exec_mode: 'cluster',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 5000
+    },
+    error_file: '/var/log/standart-kalip/error.log',
+    out_file: '/var/log/standart-kalip/access.log',
+    log_file: '/var/log/standart-kalip/combined.log',
+    time: true
+  }]
+};
+EOF
+
+# Log dizini oluşturun
+mkdir -p /var/log/standart-kalip
+
+# PM2 ile başlatın
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
 ```
-A     decayazilim.com.tr          104.247.163.244
-A     www.decayazilim.com.tr      104.247.163.244
-A     api.decayazilim.com.tr      104.247.163.244
+
+### 13. SSL Sertifikası Kurulumu
+```bash
+# Certbot kurulumu
+apt install -y certbot python3-certbot-nginx
+
+# SSL sertifikası alın
+certbot --nginx -d decayazilim.com -d www.decayazilim.com -d api.decayazilim.com --non-interactive --agree-tos --email admin@decayazilim.com
+
+# Otomatik yenileme ayarlayın
+crontab -l | { cat; echo "0 12 * * * /usr/bin/certbot renew --quiet"; } | crontab -
 ```
+
+### 14. DNS Ayarları
+Domain sağlayıcınızda aşağıdaki A kayıtlarını ekleyin:
+```
+A     decayazilim.com          104.247.163.244
+A     www.decayazilim.com      104.247.163.244
+A     api.decayazilim.com      104.247.163.244
+```
+
+### 15. Frontend Dosyalarını Nginx'e Kopyalayın
+```bash
+# Nginx web root'una frontend dosyalarını kopyalayın
+rm -rf /var/www/standart-kalip/frontend/dist/node_modules
+cp -r /var/www/standart-kalip/frontend/dist/* /var/www/standart-kalip/frontend/dist/
+```
+
+---
 
 ## 📊 Monitoring & Maintenance
 
-### Logları İzleme
+### PM2 Komutları
 ```bash
-# Tüm servislerin logları
-docker-compose logs -f
-
-# Sadece backend logları
-docker-compose logs -f backend
-
-# Sadece frontend logları
-docker-compose logs -f frontend
+pm2 status              # Durum kontrolü
+pm2 logs                # Logları görüntüle
+pm2 restart all         # Servisleri yeniden başlat
+pm2 stop all            # Servisleri durdur
+pm2 delete all          # Servisleri sil
 ```
 
-### Backup
+### MongoDB Komutları
 ```bash
-# Otomatik backup (günlük)
-/usr/local/bin/backup-standart-kalip.sh
-
-# Manuel backup
-docker exec standart-kalip-mongo mongodump --out /tmp/backup
+systemctl status mongod  # MongoDB durumu
+mongo                    # MongoDB shell
 ```
 
-### Servis Yönetimi
+### Nginx Komutları
 ```bash
-# Servisleri yeniden başlat
-systemctl restart standart-kalip
-
-# Servis durumunu kontrol et
-systemctl status standart-kalip
-
-# Servisleri durdur
-docker-compose down
-
-# Servisleri güncelle
-docker-compose up -d --build
+systemctl status nginx   # Nginx durumu
+nginx -t                 # Konfigürasyon testi
+systemctl reload nginx   # Konfigürasyonu yenile
 ```
 
-## 🔧 Development Commands
-
+### Log Dosyaları
 ```bash
-# Local development başlat
-./local-dev.sh start
+# Application logs
+tail -f /var/log/standart-kalip/combined.log
 
-# Development durdur
-./local-dev.sh stop
+# Nginx logs
+tail -f /var/log/nginx/error.log
+tail -f /var/log/nginx/access.log
 
-# Development yeniden başlat
-./local-dev.sh restart
+# System logs
+journalctl -u nginx -f
+journalctl -u mongod -f
+```
 
-# Logları göster
-./local-dev.sh logs
+---
 
-# Backend seed data
-cd backend && npm run seed
+## 🔧 Güncelleme Işlemleri
+
+### Code Güncellemesi
+```bash
+cd /var/www/standart-kalip
+
+# Git pull
+git pull origin main
+
+# Backend güncellemesi
+cd backend
+npm install --production
 
 # Frontend build
-cd frontend && npm run build
+cd ../frontend
+npm install
+npm run build
 
-# Dependency temizliği
-cd backend && npm run clean
-cd frontend && npm run clean
+# PM2 restart
+pm2 restart all
 ```
 
-## 📁 Proje Yapısı
+---
 
-```
-standart-kalip/
-├── backend/                 # Node.js/Express API
-│   ├── api/                # API rotaları
-│   ├── middleware/         # Middleware'ler
-│   ├── models/            # MongoDB modelleri
-│   ├── routes/            # Route tanımları
-│   ├── seeds/             # Veritabanı seed dosyaları
-│   └── server.js          # Ana sunucu dosyası
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/    # React componentleri
-│   │   ├── pages/         # Sayfa componentleri
-│   │   ├── config/        # Konfigürasyon dosyaları
-│   │   └── context/       # React context'leri
-│   └── dist/              # Build çıktısı
-├── docker-compose.yml      # Docker Compose
-├── Dockerfile             # Backend Dockerfile
-├── deploy.sh              # Deployment script
-├── setup-server.sh        # Sunucu kurulum script
-├── local-dev.sh          # Local development script
-├── .env.production       # Production environment
-├── .env.local           # Local environment
-└── README.md            # Bu dosya
+## 🚨 Sorun Giderme
+
+### Backend çalışmıyor
+```bash
+pm2 logs standart-kalip-backend
+pm2 restart standart-kalip-backend
 ```
 
-## 🔐 Güvenlik
+### Nginx hatası
+```bash
+nginx -t
+systemctl status nginx
+tail -f /var/log/nginx/error.log
+```
 
-- ✅ JWT tabanlı kimlik doğrulama
-- ✅ Helmet.js güvenlik başlıkları
-- ✅ Rate limiting
-- ✅ MongoDB injection koruması
-- ✅ CORS yapılandırması
-- ✅ SSL/TLS sertifikası
-- ✅ Environment variable'lar ile hassas veri koruması
+### MongoDB bağlantı sorunu
+```bash
+systemctl status mongod
+mongo --eval "db.adminCommand('ismaster')"
+```
 
-## 🤝 Katkıda Bulunma
+### SSL sertifikası sorunu
+```bash
+certbot certificates
+certbot renew --dry-run
+```
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Branch'i push edin (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
+---
+
+## ✅ Final Kontrol Listesi
+
+- [ ] Node.js kuruldu ve çalışıyor
+- [ ] MongoDB kuruldu ve çalışıyor
+- [ ] Nginx kuruldu ve konfigüre edildi
+- [ ] PM2 kuruldu ve backend çalışıyor
+- [ ] Environment dosyası doğru konfigüre edildi
+- [ ] Frontend build edildi
+- [ ] SSL sertifikası kuruldu
+- [ ] DNS kayıtları eklendi
+- [ ] Firewall ayarları yapıldı
+- [ ] Website erişilebilir: https://decayazilim.com
+- [ ] API erişilebilir: https://api.decayazilim.com
+- [ ] Admin paneli çalışıyor
+
+**Tebrikler! 🎉 Standart Kalıp artık production'da çalışıyor.**
+
+---
 
 ## 📞 Destek
 
 Herhangi bir sorun yaşarsanız:
-- Issue oluşturun
-- Email: admin@decayazilim.com.tr
-
-## 📄 Lisans
-
-Bu proje [MIT License](LICENSE) altında lisanslanmıştır.
-
----
+- Email: admin@decayazilim.com
 
 **Standart Kalıp E-Commerce Platform** - Modern, güvenli ve ölçeklenebilir e-ticaret çözümü.

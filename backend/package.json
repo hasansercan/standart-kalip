@@ -14,8 +14,7 @@
     "api",
     "nodejs",
     "express",
-    "mongodb",
-    "netlify-functions"
+    "mongodb"
   ],
   "author": "Standart Kalıp",
   "license": "ISC",

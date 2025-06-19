@@ -17,8 +17,8 @@ const getApiBaseUrl = () => {
         }
 
         // If running on production domain
-        if (hostname === 'decayazilim.com.tr' || hostname === 'www.decayazilim.com.tr') {
-            return 'https://api.decayazilim.com.tr';
+        if (hostname === 'decayazilim.com' || hostname === 'www.decayazilim.com') {
+            return 'https://api.decayazilim.com';
         }
     }
 

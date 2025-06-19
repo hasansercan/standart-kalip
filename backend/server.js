@@ -106,11 +106,11 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://decayazilim.com.tr',
-    'https://www.decayazilim.com.tr',
-    'https://api.decayazilim.com.tr',
+    'https://decayazilim.com',
+    'https://www.decayazilim.com',
+    'https://api.decayazilim.com',
     process.env.FRONTEND_URL,
-    /\.decayazilim\.com\.tr$/
+    /\.decayazilim\.com$/
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -161,15 +161,9 @@ const initialize = async () => {
   }
 };
 
-// Netlify functions için export
-if (process.env.NODE_ENV === 'production' || process.env.NETLIFY) {
-  // Netlify functions environment
-  initialize().catch(console.error);
-  module.exports = app;
-} else {
-  // Local development
-  app.listen(port, async () => {
-    await initialize();
-    console.log(`Server is running on http://localhost:${port}`);
-  });
-}
+// Start server
+app.listen(port, async () => {
+  await initialize();
+  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
