@@ -4,10 +4,13 @@
 
 - [ ] Proje klonlandı
 - [ ] `env.production.example` dosyası `backend/.env` olarak kopyalandı
-- [ ] Environment dosyasındaki değerler dolduruldu:
+- [ ] `frontend/env.production.example` dosyası `frontend/.env.production` olarak kopyalandı
+- [ ] Environment dosyalarındaki değerler dolduruldu:
   - [ ] JWT_SECRET (32+ karakter)
   - [ ] CLOUDINARY değerleri
   - [ ] STRIPE_SECRET_KEY (live key)
+  - [ ] VITE_API_BASE_URL (frontend)
+  - [ ] VITE_STRIPE_PUBLIC_KEY (frontend)
   - [ ] Diğer production değerler
 
 ## 🖥️ Sunucu Hazırlığı
@@ -24,7 +27,7 @@
 
 - [ ] Proje dizini oluşturuldu: `/var/www/standart-kalip`
 - [ ] Proje dosyaları yüklendi (Git clone veya SCP)
-- [ ] Environment dosyası kopyalandı ve düzenlendi
+- [ ] Environment dosyaları kopyalandı ve düzenlendi (backend + frontend)
 - [ ] Backend dependencies kuruldu: `npm install --production`
 - [ ] Frontend build edildi: `npm run build`
 
@@ -116,6 +119,7 @@ certbot renew --force-renewal
 - MongoDB port: 27017 (sadece localhost)
 - Frontend build path: `/var/www/standart-kalip/frontend/dist`
 - Log path: `/var/log/standart-kalip/`
-- Environment file: `/var/www/standart-kalip/backend/.env`
+- Backend environment: `/var/www/standart-kalip/backend/.env`
+- Frontend environment: `/var/www/standart-kalip/frontend/.env.production`
 
 **Deployment tamamlandığında bu listedeki tüm maddeler işaretlenmiş olmalıdır.**
