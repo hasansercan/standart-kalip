@@ -43,9 +43,13 @@ git clone <repository-url>
 cd standart-kalip
 ```
 
-### 2. Environment Dosyasını Oluşturun
+### 2. Environment Dosyalarını Oluşturun
 ```bash
+# Backend environment
 cp env.local.example backend/.env
+
+# Frontend environment
+cp frontend/env.example frontend/.env
 ```
 
 `backend/.env` dosyasını düzenleyin:
@@ -59,6 +63,14 @@ STRIPE_SECRET_KEY=sk_test_your_stripe_test_key
 NODE_ENV=development
 PORT=5000
 FRONTEND_URL=http://localhost:5173
+```
+
+`frontend/.env` dosyasını da düzenleyin:
+```env
+VITE_API_BASE_URL=http://localhost:5000
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
+VITE_APP_NAME=Standart Kalıp
+VITE_DEBUG=true
 ```
 
 ### 3. MongoDB'yi Başlatın
